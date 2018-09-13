@@ -23,7 +23,7 @@ const GUESS_ENUM = {
   RIGHT: 0,
   WRONG: 1,
   REPEAT: 2,
-  EMPTY: 4
+  INVALID: 4
 }
 const PHASE = [
 `
@@ -85,7 +85,10 @@ var postponeCount = 0;
 const GAME = {
   WORD: "",
   PHASE: 0,
-  GUESSED: [],
+  GUESSED: {
+    LETTERS: [],
+    WORDS: []
+  },
   OUT: [],
   DIFFICULTY: 0
 }
@@ -132,7 +135,8 @@ function setupGame() {
     GAME.DIFFICULTY = lastDifficulty >= 3 ? lastDifficulty : 3;
     GAME.WORD = getWord().split("");
     GAME.PHASE = 0;
-    GAME.GUESSED = [];
+    GAME.GUESSED.LETTERS = [];
+    GAME.GUESSED.WORDS = [];
     GAME.OUT = [];
 
     // Start with underscores for the word display in the tweet
@@ -171,7 +175,7 @@ function stopGame() {
 // Add letter to GUESSED array
 // returns false if letter doesn't occurr
 function guessLetter(letter) {
-  if (GAME.GUESSED.indexOf(letter) != -1) {
+  if (GAME.GUESSED.LETTERS.indexOf(letter) != -1) {
     return GUESS_ENUM.REPEAT;
   }
   let indices = getIndices(GAME.WORD.join(""), letter), match;
@@ -190,6 +194,20 @@ function guessLetter(letter) {
 }
 
 function guessWord(word) {
+  // Return repeated guess if the world has already been guessed in a previous tweet
+  if (GAME.GUESSED.WORDS.indexOf(word) != -1) {
+    return GUESS_ENUM.REPEAT;
+  }
+
+  // If the length of the guessed word doesn't match the length of the game word we wont bother with counting it
+  if (GAME.WORD.join("").length != word.length) {
+    return GUESS_ENUM.INVALID;
+  }
+
+  // Push it to the guessed array as both options from this point onward constitute a valid guess
+  GAME.GUESSED.WORDS.push(word);
+
+  // Otherwise check if the word matches
   if (GAME.WORD.join("") == word) {
     GAME.OUT = GAME.WORD;
     return GUESS_ENUM.RIGHT;
@@ -332,10 +350,12 @@ function getWord() {
 }
 
 function sendCompiledTweet(replyToID) {
-  let debugPrefix = DEBUG ? `DEBUGESSIE\ngameword ${GAME.WORD.join("")}\nlastguess ${GAME.GUESSED[GAME.GUESSED.length -  1]}\n\n` : ``;
+  let debugPrefix = DEBUG ? `DEBUGESSIE\ngameword ${GAME.WORD.join("")}\nlastguessletter ${GAME.GUESSED.LETTERS[GAME.GUESSED.LETTERS.length -  1]}\n\nlastguessword ${GAME.GUESSED.WORDS[GAME.GUESSED.WORDS.length -  1]}\n\n` : ``;
+  let previousGuesses = GAME.GUESSED.LETTERS.length > 0 ? `\n\nGeraden letters:\n${GAME.GUESSED.LETTERS.join(" ")}` : ``;
+     previousGuesses += GAME.GUESSED.WORDS.length > 0 ? `\n\nGeraden woorden:\n${GAME.GUESSED.WORDS.join(" ")}` : ``;
 
   let params = { 
-    status: `${debugPrefix}${PHASE[GAME.PHASE]}\n\n${GAME.OUT.join(" ")}\n\nGeraden letters:\n${GAME.GUESSED.join(" ")}\n\nSpel nr. ${gameCount}`
+    status: `${debugPrefix}${PHASE[GAME.PHASE]}\n\n${GAME.OUT.join(" ")}${previousGuesses}\n\nSpel nr. ${gameCount}`
   }
 
   if (replyToID) {
@@ -374,14 +394,14 @@ function gameRound() {
   // Gather tweets
   findTweets()
     .then(tweets => {
-      if (!tweets) {
-        console.log("Found no tweets.");
-        runWinLossChecks()
+      if (!inProgress || GAME.PHASE > PHASE.length - 1) {
+        console.log("Game is no longer in progress, aborting round.");
         return;
       }
 
-      if (!inProgress) {
-        console.log("Game is no longer in progress, aborting round.");
+      if (!tweets) {
+        console.log("Found no tweets.");
+        runWinLossChecks();
         return;
       }
 
@@ -396,7 +416,7 @@ function gameRound() {
 
       console.log("Got words: " + words);
 
-      let guessStatusWord = GUESS_ENUM.EMPTY;
+      let guessStatusWord = GUESS_ENUM.INVALID;
       // Guess only the most popular word
       if (words[0] && words.length > 0) {
         guessStatusWord = guessWord(words[0]);
@@ -432,7 +452,7 @@ function gameRound() {
         GAME.PHASE++;
       } else {
         // No word was guessed so we just push the letter to the guessed array and increment the phase
-        GAME.GUESSED.push(letters[letterIndex]);
+        GAME.GUESSED.LETTERS.push(letters[letterIndex]);
 
         if (guessStatusLetter === GUESS_ENUM.WRONG) {
           // False letter was guessed
@@ -467,7 +487,7 @@ function doAfterVictory() {
   .then(tweets => {
     tweets = tweets.filter(tweet => {
       // Only count tweets that added the last correct letter or the entire word
-      return (cleanStatus(tweet.text).substr(0, 1) === GAME.GUESSED[GAME.GUESSED.length - 1] || cleanStatus(tweet.text) == GAME.WORD.join("")) && tweet.user.screen_name != "galgjebot";
+      return (cleanStatus(tweet.text).substr(0, 1) == GAME.GUESSED.LETTERS[GAME.GUESSED.LETTERS.length - 1] || cleanStatus(tweet.text) == GAME.GUESSED.WORDS[GAME.GUESSED.WORDS.length - 1]) && tweet.user.screen_name != "galgjebot";
     });
 
     // Make sure every user is only counted once
@@ -475,6 +495,7 @@ function doAfterVictory() {
     tweets.forEach(tweet => {
       users.push(tweet.user.screen_name);
     });
+
     users = removeDuplicatesFrom(users);
 
     let winningPlayers = "";
