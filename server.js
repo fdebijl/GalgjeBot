@@ -18,7 +18,7 @@ const T = new Twit(TWIT_CONFIG);
 
 const DEBUG = false;
 const GAME_INTERVAL = 120 //minutes;
-const ROUND_INTERVAL = DEBUG ? 1 : 6 //minutes;
+const ROUND_INTERVAL = 6;
 const GUESS_ENUM = {
   RIGHT: 0,
   WRONG: 1,
@@ -76,6 +76,12 @@ const PHASE = [
 |
 |   RIP`
 ]
+
+
+// Instances global variables
+var inProgress = false;
+var lastDifficulty = 6;
+var postponeCount = 0;
 const GAME = {
   WORD: "",
   PHASE: 0,
@@ -84,10 +90,7 @@ const GAME = {
   DIFFICULTY: 0
 }
 
-var INPROGRESS = false;
-var LAST_DIFFICULTY = 6;
-var POSTPONE_COUNT = 0;
-
+// Empty global variables
 let wordsArray, gameCount, nextGameTime, lastStatus, secondToLastStatus;
 
 // Start a game on first boot;
@@ -95,18 +98,18 @@ setupGame();
 
 // Main loop - start a game every X minutes
 let mainLoop = setInterval(function() {
-  if (INPROGRESS) {
-    if (POSTPONE_COUNT > 3) {
+  if (inProgress) {
+    if (postponeCount > 3) {
       stopGame();
 
       setTimeout(function(){
         setupGame();
-        POSTPONE_COUNT = 0;
+        postponeCount = 0;
       }, 5000)
     }
     nextGameTime = moment().tz("Europe/Amsterdam").add(GAME_INTERVAL, 'm').format('HH:MM');
     console.log("Game is already in progress, waiting one cycle to start a new one. Projected start date is " + nextGameTime)
-    POSTPONE_COUNT++;
+    postponeCount++;
     return;
   }
 
@@ -120,13 +123,13 @@ let roundLoop;
 function setupGame() {
   nextGameTime = moment().tz("Europe/Amsterdam").add(GAME_INTERVAL, 'm').format('HH:MM');
   console.log("Setting up game - next one is scheduled to start at " + nextGameTime);
-  INPROGRESS = true;
+  inProgress = true;
 
   fs.readFile("words.txt", "utf8", function(err, words) {
     wordsArray = words.split("\n");
 
     // Word length must be atleast 3
-    GAME.DIFFICULTY = LAST_DIFFICULTY >= 3 ? LAST_DIFFICULTY : 3;
+    GAME.DIFFICULTY = lastDifficulty >= 3 ? lastDifficulty : 3;
     GAME.WORD = getWord().split("");
     GAME.PHASE = 0;
     GAME.GUESSED = [];
@@ -154,7 +157,7 @@ function setupGame() {
 
 function stopGame() {
   console.log("Stopping game...");
-  INPROGRESS = false;
+  inProgress = false;
   gameCount++;
   clearInterval(roundLoop);
 
@@ -373,10 +376,11 @@ function gameRound() {
     .then(tweets => {
       if (!tweets) {
         console.log("Found no tweets.");
+        runWinLossChecks()
         return;
       }
 
-      if (!INPROGRESS) {
+      if (!inProgress) {
         console.log("Game is no longer in progress, aborting round.");
         return;
       }
@@ -439,16 +443,20 @@ function gameRound() {
       // Send the main tweet with the gallow, guessed words and all
       sendCompiledTweet(lastStatus);
 
-      // Check if we lost
-      if (GAME.PHASE === PHASE.length) {
-        doAfterLoss();
-      }
-
-      // Check if we won
-      if (checkVictory()) {
-        doAfterVictory(); 
-      }
+      runWinLossChecks();
   });
+}
+
+function runWinLossChecks() {
+  // Check if we lost
+  if (GAME.PHASE === PHASE.length) {
+    doAfterLoss();
+  }
+
+  // Check if we won
+  if (checkVictory()) {
+    doAfterVictory(); 
+  }
 }
 
 function doAfterVictory() {
@@ -478,7 +486,7 @@ function doAfterVictory() {
     
     sendUncompiledTweet(`Gewonnen :D\n\nHet woord was: '${GAME.WORD.join("")}' en is geraden door ${winningPlayers}\n\nDe volgende ronde start om ${nextGameTime}\n\n`, lastStatus);
 
-    LAST_DIFFICULTY = LAST_DIFFICULTY - 2;
+    lastDifficulty = lastDifficulty - 2;
     stopGame();
     return;
   })
@@ -491,7 +499,7 @@ function doAfterLoss() {
   // Game over, set up new game
   sendUncompiledTweet(`Verloren :(\n\nHet woord was '${GAME.WORD.join("")}'\n\nDe volgende ronde start om ${nextGameTime}`, lastStatus);
   stopGame();
-  LAST_DIFFICULTY = LAST_DIFFICULTY + 2;
+  lastDifficulty = lastDifficulty + 2;
 
   return;
 }

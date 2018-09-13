@@ -17,3 +17,7 @@ pm2 start galgje.config.js
 
 ### Contributing
 Do whatever tbh
+
+### Roadmap  
+- Persistent games (allow restart during a session)
+- Centralized config file

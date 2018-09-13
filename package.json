@@ -8,7 +8,6 @@
 	},
 	"dependencies": {
 		"twit": "^2.2",
-		"express": "^4.16",
 		"dotenv": "^6.0",
 		"moment-timezone": "^0.5"
 	},
