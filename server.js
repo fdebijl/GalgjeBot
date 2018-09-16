@@ -110,7 +110,7 @@ let mainLoop = setInterval(function() {
         postponeCount = 0;
       }, 5000)
     }
-    nextGameTime = moment().tz("Europe/Amsterdam").add(GAME_INTERVAL, 'm').format('HH:MM');
+    nextGameTime = moment().tz("Europe/Amsterdam").add(GAME_INTERVAL, 'm').format('LT');
     console.log("Game is already in progress, waiting one cycle to start a new one. Projected start date is " + nextGameTime)
     postponeCount++;
     return;
@@ -166,14 +166,17 @@ function stopGame() {
   clearInterval(roundLoop);
 
   fs.writeFile(__dirname + '/gamecount.txt', gameCount, function (err) {
-    if(err){
+    if (err) {
       console.log('Error!', err);
     }
   });
 }
 
 // Add letter to GUESSED array
-// returns false if letter doesn't occurr
+// returns
+//  GUESS_ENUM.REPEAT if letter has already been guessed
+//  GUESS_ENUM.WRONG if the guessed letter does not occur in the gameword
+//  GUESS_ENUM.RIGHT if the guessed letter DOES occur in the gameword
 function guessLetter(letter) {
   if (GAME.GUESSED.LETTERS.indexOf(letter) != -1) {
     return GUESS_ENUM.REPEAT;
@@ -266,19 +269,32 @@ async function findTweets(inReplyTo) {
   });
 }
 
+// Filter input tweets so only actual guesses are counted
+// Push all the guesses to an array sorted by 
 function getPopularSymbol(statuses, limitToSingleLetter) {
-  if (statuses.length === 1) {
-    let single = cleanStatus(statuses[0].text);
+  // Global constrictions
+  // No more than one word
+  
+  stasuses = statuses.filter(status => {
+    status = cleanStatus(status.text);
 
-    // If we're checking for letter we'll only return if the status is actually a single letter
-    if (!limitToSingleLetter && single.length < 2) {
+    // Whether we're checking for letters or words, we don't want to process tweets with more than one word
+    // This will allow tweets with, for example, 2 chars instead of 1 to continue, but those
+    // will be filtered during guessWord(), as they will not match the gameword length
+    if (status.split(' ').length > 1) {
       return false;
     }
+  });
 
+  // Case: we only have one status
+  if (statuses.length === 1) {
+    let single = cleanStatus(statuses[0].text);
     console.log("Popular symbol in replies was " + single);
+    // gameRound() expects an array from getPopularSymbol, even if we only have a single status.
     return [single];
   }
 
+  // Case: we're dealing with more than one status
   let symbols = [];
   statuses.forEach(status => {
     let cleanedStatus = cleanStatus(status.text);
@@ -307,8 +323,11 @@ function getPopularSymbol(statuses, limitToSingleLetter) {
   return popular;
 }
 
+// Clean a status up for processing
+// Removes @galgjebot and non-alphanumerical characters
+// Output is always lowercased
 function cleanStatus(statusText) {
-  return statusText.replace("@" + process.env.TWITTER_HANDLE, '').trim().split(' ')[0].replace(/[^0-9a-zÀ-ž]/gi, '').toLowerCase();
+  return statusText.replace("@" + process.env.TWITTER_HANDLE, '').replace(/[^0-9a-zÀ-ž]/gi, '').toLowerCase();
 }
 
 function findMode(array) {
@@ -350,7 +369,7 @@ function getWord() {
 }
 
 function sendCompiledTweet(replyToID) {
-  let debugPrefix = DEBUG ? `DEBUGESSIE\ngameword ${GAME.WORD.join("")}\nlastguessletter ${GAME.GUESSED.LETTERS[GAME.GUESSED.LETTERS.length -  1]}\n\nlastguessword ${GAME.GUESSED.WORDS[GAME.GUESSED.WORDS.length -  1]}\n\n` : ``;
+  let debugPrefix = DEBUG ? `DEBUGESSIE\ngameword: ${GAME.WORD.join("")}\nlastguessletter: ${GAME.GUESSED.LETTERS[GAME.GUESSED.LETTERS.length -  1]}\nlastguessword: ${GAME.GUESSED.WORDS[GAME.GUESSED.WORDS.length -  1]}\n\n` : ``;
   let previousGuesses = GAME.GUESSED.LETTERS.length > 0 ? `\n\nGeraden letters:\n${GAME.GUESSED.LETTERS.join(" ")}` : ``;
      previousGuesses += GAME.GUESSED.WORDS.length > 0 ? `\n\nGeraden woorden:\n${GAME.GUESSED.WORDS.join(" ")}` : ``;
 
@@ -424,13 +443,8 @@ function gameRound() {
       }
 
       if (guessStatusWord === GUESS_ENUM.RIGHT) {
-        // We won
-        sendCompiledTweet(lastStatus);
-
-        // Send the post-game stats after 15 seconds
-        setTimeout(function() {
-          doAfterVictory(); 
-        }, 15000)
+        doAfterVictory(); 
+        return;
       }
 
       let guessStatusLetter = guessLetter(letters[letterIndex]);
@@ -485,6 +499,11 @@ function doAfterVictory() {
   // Find everyone who contributed to the victory
   findTweets(secondToLastStatus)
   .then(tweets => {
+    if (tweets.length === 0) {
+      sendUncompiledTweet(`Gewonnen :D\n\nHet woord was: '${GAME.WORD.join("")}'\n\nDe volgende ronde start om ${nextGameTime}`, lastStatus);
+      return;
+    }
+
     tweets = tweets.filter(tweet => {
       // Only count tweets that added the last correct letter or the entire word
       return (cleanStatus(tweet.text).substr(0, 1) == GAME.GUESSED.LETTERS[GAME.GUESSED.LETTERS.length - 1] || cleanStatus(tweet.text) == GAME.GUESSED.WORDS[GAME.GUESSED.WORDS.length - 1]) && tweet.user.screen_name != "galgjebot";
@@ -505,14 +524,12 @@ function doAfterVictory() {
       winningPlayers += " ";
     })
     
-    sendUncompiledTweet(`Gewonnen :D\n\nHet woord was: '${GAME.WORD.join("")}' en is geraden door ${winningPlayers}\n\nDe volgende ronde start om ${nextGameTime}\n\n`, lastStatus);
+    sendUncompiledTweet(`Gewonnen :D\n\nHet woord was: '${GAME.WORD.join("")}' en is geraden door ${winningPlayers}\n\nDe volgende ronde start om ${nextGameTime}`, lastStatus);
 
     lastDifficulty = lastDifficulty - 2;
     stopGame();
     return;
   })
-
-  return;
 }
 
 function doAfterLoss() {
