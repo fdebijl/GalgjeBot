@@ -18,7 +18,7 @@ const T = new Twit(TWIT_CONFIG);
 
 const DEBUG = false;
 const GAME_INTERVAL = 120 //minutes;
-const ROUND_INTERVAL = 6;
+const ROUND_INTERVAL = DEBUG ? 0.5 : 6 // minutes;
 const GUESS_ENUM = {
   RIGHT: 0,
   WRONG: 1,
@@ -134,7 +134,7 @@ function setupGame() {
     // Word length must be atleast 3
     GAME.DIFFICULTY = lastDifficulty >= 3 ? lastDifficulty : 3;
     GAME.WORD = getWord().split("");
-    GAME.PHASE = 0;
+    GAME.PHASE = DEBUG ? PHASE.length - 2 : 0;
     GAME.GUESSED.LETTERS = [];
     GAME.GUESSED.WORDS = [];
     GAME.OUT = [];
@@ -274,13 +274,10 @@ async function findTweets(inReplyTo) {
 function getPopularSymbol(statuses, limitToSingleLetter) {
   // Global constrictions
   // No more than one word
-  
   stasuses = statuses.filter(status => {
     status = cleanStatus(status.text);
 
     // Whether we're checking for letters or words, we don't want to process tweets with more than one word
-    // This will allow tweets with, for example, 2 chars instead of 1 to continue, but those
-    // will be filtered during guessWord(), as they will not match the gameword length
     if (status.split(' ').length > 1) {
       return false;
     }
@@ -289,7 +286,7 @@ function getPopularSymbol(statuses, limitToSingleLetter) {
   // Case: we only have one status
   if (statuses.length === 1) {
     let single = cleanStatus(statuses[0].text);
-    console.log("Popular symbol in replies was " + single);
+    console.log(`Popular ${limitToSingleLetter ? "letter" : "word"} in replies was ${single})`);
     // gameRound() expects an array from getPopularSymbol, even if we only have a single status.
     return [single];
   }
@@ -301,8 +298,8 @@ function getPopularSymbol(statuses, limitToSingleLetter) {
     if (limitToSingleLetter && cleanedStatus.length < 2) {
       symbols.push(cleanedStatus);
     } else {
-      // Words must be longer than 1 char
-      if (cleanedStatus.length > 1) {
+      // Words must be longer than 3 char, as per the game rules
+      if (cleanedStatus.length > 3) {
         console.log("Pushing word to symbol array: " + cleanedStatus)
         symbols.push(cleanedStatus);
       }
@@ -319,15 +316,29 @@ function getPopularSymbol(statuses, limitToSingleLetter) {
     });
   }
 
-  console.log("Popular words: " + popular);
+  if (popular) {
+    console.log(`Popular ${limitToSingleLetter ? "letters" : "words"} in replies are: ${popular}`);
+  } else {
+    console.log(`Could not determine a popular ${limitToSingleLetter ? "letter" : "word"} in replies`)
+  }
+  
   return popular;
 }
 
 // Clean a status up for processing
-// Removes @galgjebot and non-alphanumerical characters
+// Removes '@galgjebot' and non-alphanumerical characters or spaces
 // Output is always lowercased
+// Trailing and leading whitespace is removed
 function cleanStatus(statusText) {
-  return statusText.replace("@" + process.env.TWITTER_HANDLE, '').replace(/[^0-9a-zÀ-ž]/gi, '').toLowerCase();
+  return statusText
+    // Remove '@galgjebot'
+    .replace("@" + process.env.TWITTER_HANDLE, '')
+    // Remove non-alphanumerical characters, but maintain spaces so we can check for multi-word statuses later, so we can remove them
+    .replace(/[^0-9a-zA-ZÀ-ž\s]/gi, '')
+    // Lowercase the output for consistent checking, because gameword will always be lowercase aswell
+    .toLowerCase()
+    // Remove trailing and leading whitespace
+    .trim();
 }
 
 function findMode(array) {
@@ -413,7 +424,7 @@ function gameRound() {
   // Gather tweets
   findTweets()
     .then(tweets => {
-      if (!inProgress || GAME.PHASE > PHASE.length - 1) {
+      if (!inProgress) {
         console.log("Game is no longer in progress, aborting round.");
         return;
       }
@@ -433,13 +444,11 @@ function gameRound() {
         return;
       }
 
-      console.log("Got words: " + words);
-
       let guessStatusWord = GUESS_ENUM.INVALID;
       // Guess only the most popular word
       if (words[0] && words.length > 0) {
         guessStatusWord = guessWord(words[0]);
-        console.log("Processing guess for word " + words[0] + " and got status " + guessStatusWord)
+        console.log("Processing guess for word " + words[0] + " and got status " + GUESS_ENUM[guessStatusWord])
       }
 
       if (guessStatusWord === GUESS_ENUM.RIGHT) {
@@ -465,7 +474,7 @@ function gameRound() {
       if (guessStatusWord === GUESS_ENUM.WRONG) {
         GAME.PHASE++;
       } else {
-        // No word was guessed so we just push the letter to the guessed array and increment the phase
+        // No word was guessed so we just push the letter to the guessed array
         GAME.GUESSED.LETTERS.push(letters[letterIndex]);
 
         if (guessStatusLetter === GUESS_ENUM.WRONG) {
@@ -477,14 +486,18 @@ function gameRound() {
       // Send the main tweet with the gallow, guessed words and all
       sendCompiledTweet(lastStatus);
 
+      // Run the win/loss checks to see if the phase has incremented to the point that we lost, or if the last letter guessed completed the word and we won
       runWinLossChecks();
   });
 }
 
 function runWinLossChecks() {
   // Check if we lost
-  if (GAME.PHASE === PHASE.length) {
-    doAfterLoss();
+  console.log(`Checking for loss, game is in phase ${GAME.PHASE}, game will be terminated at phase ${PHASE.length}. This currently holds to be: ${GAME.PHASE >= PHASE.length}`)
+  if (GAME.PHASE >= PHASE.length - 1) {
+    setTimeout(function() {
+      doAfterLoss();
+    }, 1000)
   }
 
   // Check if we won
@@ -500,12 +513,13 @@ function doAfterVictory() {
   findTweets(secondToLastStatus)
   .then(tweets => {
     if (tweets.length === 0) {
+      // Fallback if no tweets are found for whatever reason
       sendUncompiledTweet(`Gewonnen :D\n\nHet woord was: '${GAME.WORD.join("")}'\n\nDe volgende ronde start om ${nextGameTime}`, lastStatus);
       return;
     }
 
     tweets = tweets.filter(tweet => {
-      // Only count tweets that added the last correct letter or the entire word
+      // Only count tweets that added the last correct letter, or the entire word
       return (cleanStatus(tweet.text).substr(0, 1) == GAME.GUESSED.LETTERS[GAME.GUESSED.LETTERS.length - 1] || cleanStatus(tweet.text) == GAME.GUESSED.WORDS[GAME.GUESSED.WORDS.length - 1]) && tweet.user.screen_name != "galgjebot";
     });
 
@@ -536,8 +550,8 @@ function doAfterLoss() {
   console.log("Game lost")
   // Game over, set up new game
   sendUncompiledTweet(`Verloren :(\n\nHet woord was '${GAME.WORD.join("")}'\n\nDe volgende ronde start om ${nextGameTime}`, lastStatus);
-  stopGame();
   lastDifficulty = lastDifficulty + 2;
+  stopGame();
 
   return;
 }
