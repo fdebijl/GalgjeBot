@@ -1,30 +1,19 @@
-/* Setting things up. */
 require('dotenv').config();
 
+// Libs
 const fs = require('fs'),
       path = require('path'),
       Twit = require('twit'),
       moment = require('moment-timezone');
 
+// Private libs
+const WordMan = require('./wordman.js');
+const GAME = require('./game.js');
+const CONFIG = require('./config.js')
 
-const TWIT_CONFIG = {
-  consumer_key: process.env.CONSUMER_KEY,
-  consumer_secret: process.env.CONSUMER_SECRET,
-  access_token: process.env.ACCESS_TOKEN,
-  access_token_secret: process.env.ACCESS_TOKEN_SECRET
-};
-
-const T = new Twit(TWIT_CONFIG);
-
-const DEBUG = false;
-const GAME_INTERVAL = 120 //minutes;
-const ROUND_INTERVAL = DEBUG ? 0.5 : 6 // minutes;
-const GUESS_ENUM = {
-  RIGHT: 0,
-  WRONG: 1,
-  REPEAT: 2,
-  INVALID: 4
-}
+// Configuration
+const T = new Twit(CONFIG.TWIT_CONFIG);
+WordMan.DEBUG = CONFIG.DEBUG;
 const PHASE = [
 `
 
@@ -77,24 +66,13 @@ const PHASE = [
 |   RIP`
 ]
 
-
-// Instances global variables
+// Instantiated global variables
 var inProgress = false;
 var lastDifficulty = 6;
 var postponeCount = 0;
-const GAME = {
-  WORD: "",
-  PHASE: 0,
-  GUESSED: {
-    LETTERS: [],
-    WORDS: []
-  },
-  OUT: [],
-  DIFFICULTY: 0
-}
 
-// Empty global variables
-let wordsArray, gameCount, nextGameTime, lastStatus, secondToLastStatus;
+// Empty global variables we'll need later on
+let gameCount, nextGameTime, lastStatus, secondToLastStatus;
 
 // Start a game on first boot;
 setupGame();
@@ -110,31 +88,29 @@ let mainLoop = setInterval(function() {
         postponeCount = 0;
       }, 5000)
     }
-    nextGameTime = moment().tz("Europe/Amsterdam").add(GAME_INTERVAL, 'm').format('LT');
+    nextGameTime = moment().tz("Europe/Amsterdam").add(CONFIG.GAME_INTERVAL, 'm').format('LT');
     console.log("Game is already in progress, waiting one cycle to start a new one. Projected start date is " + nextGameTime)
     postponeCount++;
     return;
   }
 
   setupGame();
-}, GAME_INTERVAL * 60 * 1000);
+}, CONFIG.GAME_INTERVAL * 60 * 1000);
 
 // This will be populated later and will contain the loop for executing a round
 let roundLoop;
 
 // Setup a single game
 function setupGame() {
-  nextGameTime = moment().tz("Europe/Amsterdam").add(GAME_INTERVAL, 'm').format('HH:MM');
+  nextGameTime = moment().tz("Europe/Amsterdam").add(CONFIG.GAME_INTERVAL, 'm').format('HH:MM');
   console.log("Setting up game - next one is scheduled to start at " + nextGameTime);
   inProgress = true;
 
-  fs.readFile("words.txt", "utf8", function(err, words) {
-    wordsArray = words.split("\n");
-
-    // Word length must be atleast 3
-    GAME.DIFFICULTY = lastDifficulty >= 3 ? lastDifficulty : 3;
-    GAME.WORD = getWord().split("");
-    GAME.PHASE = DEBUG ? PHASE.length - 2 : 0;
+  // Word length must be atleast 3 (check config.js)
+  GAME.DIFFICULTY = lastDifficulty >= CONFIG.MIN_WORD_LENGTH ? lastDifficulty : CONFIG.MIN_WORD_LENGTH;
+  WordMan.getWord().then(selectedWord => {
+    GAME.WORD = selectedWord.split("");
+    GAME.PHASE = CONFIG.DEBUG ? PHASE.length - 2 : 0;
     GAME.GUESSED.LETTERS = [];
     GAME.GUESSED.WORDS = [];
     GAME.OUT = [];
@@ -154,7 +130,7 @@ function setupGame() {
       // Execute a round with full game rules every X minutes
       roundLoop = setInterval(function() {
         gameRound();
-      }, ROUND_INTERVAL * 60 * 1000)
+      }, CONFIG.ROUND_INTERVAL * 60 * 1000)
     });
   });
 }
@@ -170,66 +146,6 @@ function stopGame() {
       console.log('Error!', err);
     }
   });
-}
-
-// Add letter to GUESSED array
-// returns
-//  GUESS_ENUM.REPEAT if letter has already been guessed
-//  GUESS_ENUM.WRONG if the guessed letter does not occur in the gameword
-//  GUESS_ENUM.RIGHT if the guessed letter DOES occur in the gameword
-function guessLetter(letter) {
-  if (GAME.GUESSED.LETTERS.indexOf(letter) != -1) {
-    return GUESS_ENUM.REPEAT;
-  }
-  let indices = getIndices(GAME.WORD.join(""), letter), match;
-
-  console.log(`Letter ${letter} got indices ${indices} on word ${GAME.WORD.join("")}`);
-
-  if (indices.length === 0) {
-    return GUESS_ENUM.WRONG;
-  } else {
-    indices.forEach(index => {
-      GAME.OUT[index] = GAME.WORD[index];
-    });
-  }
-
-  return GUESS_ENUM.RIGHT;
-}
-
-function guessWord(word) {
-  // Return repeated guess if the world has already been guessed in a previous tweet
-  if (GAME.GUESSED.WORDS.indexOf(word) != -1) {
-    return GUESS_ENUM.REPEAT;
-  }
-
-  // If the length of the guessed word doesn't match the length of the game word we wont bother with counting it
-  if (GAME.WORD.join("").length != word.length) {
-    return GUESS_ENUM.INVALID;
-  }
-
-  // Push it to the guessed array as both options from this point onward constitute a valid guess
-  GAME.GUESSED.WORDS.push(word);
-
-  // Otherwise check if the word matches
-  if (GAME.WORD.join("") == word) {
-    GAME.OUT = GAME.WORD;
-    return GUESS_ENUM.RIGHT;
-  }
-
-  return GUESS_ENUM.WRONG;
-}
-
-// Returns all the instances of a letter within a word
-function getIndices(word, letter) {
-  let indices = [];
-
-  for(let j = 0; j < word.length; j++) {
-    if (word[j] == letter) {
-      indices.push(j);
-    }
-  }
-
-  return indices;
 }
 
 function checkVictory() {
@@ -269,118 +185,8 @@ async function findTweets(inReplyTo) {
   });
 }
 
-// Filter input tweets so only actual guesses are counted
-// Push all the guesses to an array sorted by 
-function getPopularSymbol(statuses, limitToSingleLetter) {
-  // Global constrictions
-  // No more than one word
-  stasuses = statuses.filter(status => {
-    status = cleanStatus(status.text);
-
-    // Whether we're checking for letters or words, we don't want to process tweets with more than one word
-    if (status.split(' ').length > 1) {
-      return false;
-    }
-  });
-
-  // Case: we only have one status
-  if (statuses.length === 1) {
-    let single = cleanStatus(statuses[0].text);
-    console.log(`Popular ${limitToSingleLetter ? "letter" : "word"} in replies was ${single})`);
-    // gameRound() expects an array from getPopularSymbol, even if we only have a single status.
-    return [single];
-  }
-
-  // Case: we're dealing with more than one status
-  let symbols = [];
-  statuses.forEach(status => {
-    let cleanedStatus = cleanStatus(status.text);
-    if (limitToSingleLetter && cleanedStatus.length < 2) {
-      symbols.push(cleanedStatus);
-    } else {
-      // Words must be longer than 3 char, as per the game rules
-      if (cleanedStatus.length > 3) {
-        console.log("Pushing word to symbol array: " + cleanedStatus)
-        symbols.push(cleanedStatus);
-      }
-    }
-  })
-
-  let popular = [];
-  while (symbols.length > 0) {
-    let add = findMode(symbols);
-    popular.push(add);
-    // Remove all instances of the letter we added to popular from symbols
-    symbols = symbols.filter(symbol => {
-      symbol !== add;
-    });
-  }
-
-  if (popular) {
-    console.log(`Popular ${limitToSingleLetter ? "letters" : "words"} in replies are: ${popular}`);
-  } else {
-    console.log(`Could not determine a popular ${limitToSingleLetter ? "letter" : "word"} in replies`)
-  }
-  
-  return popular;
-}
-
-// Clean a status up for processing
-// Removes '@galgjebot' and non-alphanumerical characters or spaces
-// Output is always lowercased
-// Trailing and leading whitespace is removed
-function cleanStatus(statusText) {
-  return statusText
-    // Remove '@galgjebot'
-    .replace("@" + process.env.TWITTER_HANDLE, '')
-    // Remove non-alphanumerical characters, but maintain spaces so we can check for multi-word statuses later, so we can remove them
-    .replace(/[^0-9a-zA-ZÀ-ž\s]/gi, '')
-    // Lowercase the output for consistent checking, because gameword will always be lowercase aswell
-    .toLowerCase()
-    // Remove trailing and leading whitespace
-    .trim();
-}
-
-function findMode(array) {
-  return array.reduce(function(current, item) {
-    let val = current.numMapping[item] = (current.numMapping[item] || 0) + 1;
-    if (val > current.greatestFreq) {
-        current.greatestFreq = val;
-        current.mode = item;
-    }
-    return current;
-  }, {mode: null, greatestFreq: -Infinity, numMapping: {}}).mode;
-}
-
-function removeDuplicatesFrom(array) {
-  let seen = {};
-  return array.filter(function(item) {
-      return seen.hasOwnProperty(item) ? false : (seen[item] = true);
-  });
-}
-
-function getWord() {
-  if (DEBUG) {
-    return "sjon";
-  }
-  
-  let eligibleWords = [];
-
-  console.log(`Looking for word with min length ${GAME.DIFFICULTY} and max length ${GAME.DIFFICULTY + 2}`);
-
-  for (let e = 0; e < wordsArray.length; e++) {
-    if (wordsArray[e].length >= GAME.DIFFICULTY && wordsArray[e].length <= GAME.DIFFICULTY + 2) {
-      eligibleWords.push(wordsArray[e]);
-    }
-  }
-
-  let randomIndex = Math.floor(Math.random() * eligibleWords.length);
-  console.log("Selected random word '" + eligibleWords[randomIndex] + "'")
-  return eligibleWords[randomIndex].toLowerCase();
-}
-
 function sendCompiledTweet(replyToID) {
-  let debugPrefix = DEBUG ? `DEBUGESSIE\ngameword: ${GAME.WORD.join("")}\nlastguessletter: ${GAME.GUESSED.LETTERS[GAME.GUESSED.LETTERS.length -  1]}\nlastguessword: ${GAME.GUESSED.WORDS[GAME.GUESSED.WORDS.length -  1]}\n\n` : ``;
+  let debugPrefix = CONFIG.DEBUG ? `DEBUGESSIE\ngameword: ${GAME.WORD.join("")}\nlastguessletter: ${GAME.GUESSED.LETTERS[GAME.GUESSED.LETTERS.length -  1]}\nlastguessword: ${GAME.GUESSED.WORDS[GAME.GUESSED.WORDS.length -  1]}\n\n` : ``;
   let previousGuesses = GAME.GUESSED.LETTERS.length > 0 ? `\n\nGeraden letters:\n${GAME.GUESSED.LETTERS.join(" ")}` : ``;
      previousGuesses += GAME.GUESSED.WORDS.length > 0 ? `\n\nGeraden woorden:\n${GAME.GUESSED.WORDS.join(" ")}` : ``;
 
@@ -436,30 +242,30 @@ function gameRound() {
       }
 
       // Find majority symbol
-      let letters = getPopularSymbol(tweets, true), letterIndex = 0;
-      let words = getPopularSymbol(tweets);
+      let letters = WordMan.getPopularSymbol(tweets, true), letterIndex = 0;
+      let words = WordMan.getPopularSymbol(tweets);
 
       if (!letters && !words) {
         console.log("Tweets were found but none contained single characters or valid words.")
         return;
       }
 
-      let guessStatusWord = GUESS_ENUM.INVALID;
+      let guessStatusWord = CONFIG.GUESS_ENUM.INVALID;
       // Guess only the most popular word
       if (words[0] && words.length > 0) {
-        guessStatusWord = guessWord(words[0]);
-        console.log("Processing guess for word " + words[0] + " and got status " + GUESS_ENUM[guessStatusWord])
+        guessStatusWord = WordMan.guessWord(words[0]);
+        console.log("Processing guess for word " + words[0] + " and got status " + CONFIG.GUESS_ENUM[guessStatusWord])
       }
 
-      if (guessStatusWord === GUESS_ENUM.RIGHT) {
+      if (guessStatusWord === CONFIG.GUESS_ENUM.RIGHT) {
         doAfterVictory(); 
         return;
       }
 
-      let guessStatusLetter = guessLetter(letters[letterIndex]);
+      let guessStatusLetter = WordMan.guessLetter(letters[letterIndex]);
 
       // Loop through every letter until we get one that's not been guessed yet
-      while (guessStatusLetter === GUESS_ENUM.REPEAT) {
+      while (guessStatusLetter === CONFIG.GUESS_ENUM.REPEAT) {
         letterIndex++;
 
         if (letterIndex >= letters.length) {
@@ -467,20 +273,15 @@ function gameRound() {
           return;
         } 
 
-        guessStatusLetter = guessLetter(letters[letterIndex]);
+        guessStatusLetter = WordMan.guessLetter(letters[letterIndex]);
       }
 
       // A word was guessed but it was wrong, so we increment the phase
-      if (guessStatusWord === GUESS_ENUM.WRONG) {
+      if (guessStatusWord === CONFIG.GUESS_ENUM.WRONG) {
         GAME.PHASE++;
-      } else {
-        // No word was guessed so we just push the letter to the guessed array
-        GAME.GUESSED.LETTERS.push(letters[letterIndex]);
-
-        if (guessStatusLetter === GUESS_ENUM.WRONG) {
-          // False letter was guessed
-          GAME.PHASE++;
-        }
+      } else if (guessStatusLetter === CONFIG.GUESS_ENUM.WRONG) {
+        // False letter was guessed
+        GAME.PHASE++;
       }
 
       // Send the main tweet with the gallow, guessed words and all
@@ -520,7 +321,7 @@ function doAfterVictory() {
 
     tweets = tweets.filter(tweet => {
       // Only count tweets that added the last correct letter, or the entire word
-      return (cleanStatus(tweet.text).substr(0, 1) == GAME.GUESSED.LETTERS[GAME.GUESSED.LETTERS.length - 1] || cleanStatus(tweet.text) == GAME.GUESSED.WORDS[GAME.GUESSED.WORDS.length - 1]) && tweet.user.screen_name != "galgjebot";
+      return (WordMan.cleanStatus(tweet.text).substr(0, 1) == GAME.GUESSED.LETTERS[GAME.GUESSED.LETTERS.length - 1] || WordMan.cleanStatus(tweet.text) == GAME.GUESSED.WORDS[GAME.GUESSED.WORDS.length - 1]) && tweet.user.screen_name != "galgjebot";
     });
 
     // Make sure every user is only counted once
@@ -529,7 +330,7 @@ function doAfterVictory() {
       users.push(tweet.user.screen_name);
     });
 
-    users = removeDuplicatesFrom(users);
+    users = WordMan.removeDuplicatesFrom(users);
 
     let winningPlayers = "";
     users.forEach(user => {
