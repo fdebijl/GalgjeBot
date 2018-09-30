@@ -3,7 +3,7 @@ module.exports = {
     {
     	name: 'Hangman API',
     	script: 'server.js',
-			watch: ["server.js", "package.json"]
+			watch: ["hm_server.js", "hm_config.js", "hm_game.js", "hm_wordman.js", "package.json"]
     }
   ]
 };

@@ -2,9 +2,9 @@
 	"name": "hangman",
 	"version": "1.2",
 	"description": "Play hangman on Twitter",
-	"main": "server.js",
+	"main": "hm_server.js",
 	"scripts": {
-		"start": "node server.js"
+		"start": "node hm_server.js"
 	},
 	"dependencies": {
 		"twit": "^2.2",

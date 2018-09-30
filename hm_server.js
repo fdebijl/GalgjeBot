@@ -7,9 +7,9 @@ const fs = require('fs'),
       moment = require('moment-timezone');
 
 // Private libs
-const WordMan = require('./wordman.js');
-const GAME = require('./game.js');
-const CONFIG = require('./config.js')
+const WordMan = require('./hm_wordman.js');
+const GAME = require('./hm_game.js');
+const CONFIG = require('./hm_config.js')
 
 // Configuration
 const T = new Twit(CONFIG.TWIT_CONFIG);
@@ -67,7 +67,7 @@ const PHASE = [
 ]
 
 // Instantiated global variables
-var lastDifficulty = 6;
+let lastDifficulty = 6;
 
 // Empty global variables we'll need later on
 let gameCount, nextGameTime, lastStatus, secondToLastStatus;

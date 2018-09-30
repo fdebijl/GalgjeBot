@@ -12,8 +12,8 @@ if (typeof module == 'undefined') {
   GAME.OUT = [];
 } else {
   fs = require('fs');
-  GAME = require('./game.js');
-  CONFIG = require('./config.js');
+  GAME = require('./hm_game.js');
+  CONFIG = require('./hm_config.js');
 
   module.exports = {
     guessLetter: guessLetter,
