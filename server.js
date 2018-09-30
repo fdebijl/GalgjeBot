@@ -67,9 +67,7 @@ const PHASE = [
 ]
 
 // Instantiated global variables
-var inProgress = false;
 var lastDifficulty = 6;
-var postponeCount = 0;
 
 // Empty global variables we'll need later on
 let gameCount, nextGameTime, lastStatus, secondToLastStatus;
@@ -79,18 +77,9 @@ setupGame();
 
 // Main loop - start a game every X minutes
 let mainLoop = setInterval(function() {
-  if (inProgress) {
-    if (postponeCount > 3) {
-      stopGame();
-
-      setTimeout(function(){
-        setupGame();
-        postponeCount = 0;
-      }, 5000)
-    }
+  if (GAME.IN_PROGRESS) {
     nextGameTime = moment().tz("Europe/Amsterdam").add(CONFIG.GAME_INTERVAL, 'm').format('LT');
     console.log("Game is already in progress, waiting one cycle to start a new one. Projected start date is " + nextGameTime)
-    postponeCount++;
     return;
   }
 
@@ -104,7 +93,7 @@ let roundLoop;
 function setupGame() {
   nextGameTime = moment().tz("Europe/Amsterdam").add(CONFIG.GAME_INTERVAL, 'm').format('HH:MM');
   console.log("Setting up game - next one is scheduled to start at " + nextGameTime);
-  inProgress = true;
+  GAME.IN_PROGRESS = true;
 
   // Word length must be atleast 3 (check config.js)
   GAME.DIFFICULTY = lastDifficulty >= CONFIG.MIN_WORD_LENGTH ? lastDifficulty : CONFIG.MIN_WORD_LENGTH;
@@ -137,7 +126,7 @@ function setupGame() {
 
 function stopGame() {
   console.log("Stopping game...");
-  inProgress = false;
+  GAME.IN_PROGRESS = false;
   gameCount++;
   clearInterval(roundLoop);
 
@@ -230,7 +219,7 @@ function gameRound() {
   // Gather tweets
   findTweets()
     .then(tweets => {
-      if (!inProgress) {
+      if (!GAME.IN_PROGRESS) {
         console.log("Game is no longer in progress, aborting round.");
         return;
       }
