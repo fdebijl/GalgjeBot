@@ -20,4 +20,4 @@ Do whatever tbh
 
 ### Roadmap  
 - Persistent games (allow restart during a session)
-- Centralized config file
+- Additional test cases
