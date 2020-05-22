@@ -15,9 +15,6 @@ npm install pm2 -g
 pm2 start galgje.config.js
 ```
 
-### Contributing
-Do whatever tbh
-
 ### Roadmap  
 - Persistent games (allow restart during a session)
 - Additional test cases
