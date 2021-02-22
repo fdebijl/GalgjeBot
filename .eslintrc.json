@@ -1,0 +1,37 @@
+{
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:jasmine/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "legacyDecorators": true
+    }
+  },
+  "rules": {
+    "quotes": ["error", "single"],
+    "no-console": 1,
+    "no-plusplus": 0,
+    "no-await-in-loop": 0,
+    "max-len": [
+      2,
+      {
+        "code": 200
+      }
+    ],
+    "object-curly-newline": 0,
+    "no-trailing-spaces": 1,
+    "@typescript-eslint/camelcase": 0,
+    "prefer-const": 1
+  },
+  "env": {
+    "node": true,
+    "jasmine": true
+  },
+  "plugins": [
+    "jasmine"
+  ]
+}

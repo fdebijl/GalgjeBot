@@ -1,18 +1,3 @@
-'s anderendaags
-'s avonds
-'s middags
-'s nachts
-'s ochtends
-'s-Gravenhage
-'s-Hertogenbosch
-06-nummer
-1 aprilgek
-1 aprilgrap
-1 aprilmop
-5 meiherdenking
-5 meiviering
-8 uurjournaal
-80-jarige
 A-biljet
 A-bom
 A-kant
@@ -1069,11 +1054,8 @@ Mohikaan
 Molukken
 Molukker
 Moluks
-Mongolisch
 Mongolië
 Mongoliër
-Mongools
-Mongoolse
 Monumentendag
 Moor
 Moors
@@ -1130,7 +1112,6 @@ Nederlandssprekende
 Nederlandstalig
 Nedersaksen
 Nedersaksisch
-Negerengels
 Nengre
 Neolatijn
 Nepal
@@ -54037,32 +54018,6 @@ kangoeroevlees
 kanis
 kanjer
 kanji
-kanker
-kankeraar
-kankerachtig
-kankerbehandeling
-kankerbestrijding
-kankerbestrijdingsfonds
-kankercel
-kankeren
-kankerfonds
-kankergen
-kankergezwel
-kankerinstituut
-kankerlijer
-kankermedicijn
-kankeronderzoek
-kankerpatiënt
-kankerpatiënte
-kankerpit
-kankerrisico
-kankersoorten
-kankerspecialist
-kankersterfte
-kankerstok
-kankertherapie
-kankerverwekkend
-kankerverwekker
 kannenkijker
 kannenwasser
 kannetje

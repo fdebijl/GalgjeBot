@@ -1,0 +1,20 @@
+{
+	"name": "hangman",
+	"version": "1.2",
+	"description": "Play hangman on Twitter",
+	"main": "hm_server.js",
+	"scripts": {
+		"start": "node hm_server.js"
+	},
+	"dependencies": {
+		"twit": "^2.2",
+		"dotenv": "^6.0",
+		"moment-timezone": "^0.5"
+	},
+	"engines": {
+		"node": "6.9.1"
+	},
+	"repository": {
+		"url": "https://github.com/Fdebijl/GalgjeBot/"
+	}
+}

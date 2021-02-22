@@ -1,32 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Hangman Test Suite</title>
-  <link rel="stylesheet" href="./qunit-2.6.2.css">
-</head>
-<body>
-  <div id="qunit"></div>
-  <div id="qunit-fixture"></div>
-  <script>
-    // Shimming
-    function require() {
-      return {};
-    }
+describe('Placeholder Test', () => {
+  it('Should pass', () => {
+    expect(true).toBeTrue();
+  });
+});
 
-    Object.prototype.config = function() {
-      return true;
-    }
-
-    var process = {};
-    process.env = {};
-    var module = {};
-  </script>
-  <script src="./qunit-2.6.2.js"></script>
-  <script src="../config.js"></script>
-  <script src="../wordman.js"></script>
-  <script>
-    // Expect Letters: ["a", "c"]
+// Expect Letters: ["a", "c"]
     // Expect Words: []
     const TEST_STATUSES_VALID_LETTERS = [
       {text: "@galgjebot A"},
@@ -229,6 +207,3 @@
       let expected = GUESS_ENUM.REPEAT;
       assert.deepEqual(value, expected, `Got '${value}', expected '${expected}'.`);
     });
-  </script>
-</body>
-</html>
