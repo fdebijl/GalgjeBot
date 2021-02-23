@@ -45,7 +45,6 @@ export class Game {
       // Fallback game number
       this.gameNumber = 1;
       db.collection('games').find({}).sort({'gameNumber': -1}).toArray().then(games => {
-        debugger;
         if (games && games.length > 0) {
           this.gameNumber = (games[0] as Game).gameNumber + 1;
         }
