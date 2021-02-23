@@ -5,7 +5,7 @@
     "start": "node index.js",
     "compile": "tsc",
     "lint": "eslint \"./src/**/*.ts\" --max-warnings 2",
-    "test": "jasmine-ts --config=jasmine.config.json "
+    "test": "jasmine-ts --config=jasmine.config.json --random=false"
   },
   "dependencies": {
     "@fdebijl/clog": "^1.76.0",

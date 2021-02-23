@@ -243,10 +243,10 @@ describe('Guess Parsers', () => {
         .toEqual(expected);
 
       done();
-    }, 500);
+    }, 1000);
   });
 
-  it('Wrong Letter - GP', (done) => {
+  it('Wrong and Repeated Letter - GP', (done) => {
     setTimeout(() => {
       const input = 'a';
       const value = guessLetter(input);
@@ -256,21 +256,17 @@ describe('Guess Parsers', () => {
         .withContext(`Got '${Guess[value]}', expected '${Guess[expected]}'`)
         .toEqual(expected);
 
-      done();
-    }, 1500);
-  });
+      setTimeout(() => {
+        const input = 'a';
+        const value = guessLetter(input);
+        const expected = Guess.REPEAT;
 
-  it('Repeated Letter - GP', (done) => {
-    setTimeout(() => {
-      const input = 'a';
-      const value = guessLetter(input);
-      const expected = Guess.REPEAT;
+        expect(value)
+          .withContext(`Got '${Guess[value]}', expected '${Guess[expected]}'`)
+          .toEqual(expected);
 
-      expect(value)
-        .withContext(`Got '${Guess[value]}', expected '${Guess[expected]}'`)
-        .toEqual(expected);
-
-      done();
-    }, 2000);
+        done();
+      }, 1000);
+    }, 1000);
   });
 });
