@@ -257,7 +257,7 @@ describe('Guess Parsers', () => {
         .toEqual(expected);
 
       done();
-    }, 750);
+    }, 1500);
   });
 
   it('Repeated Letter - GP', (done) => {
@@ -271,6 +271,6 @@ describe('Guess Parsers', () => {
         .toEqual(expected);
 
       done();
-    }, 1000);
+    }, 2000);
   });
 });
