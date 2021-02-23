@@ -1,209 +1,254 @@
-describe('Placeholder Test', () => {
-  it('Should pass', () => {
-    expect(true).toBeTrue();
+/// <reference types="../" />
+
+import { cleanStatus } from '../src/util/cleanStatus';
+import { isValidStatus } from '../src/util/isValidStatus';
+import { getPopularSymbol } from '../src/logic/getPopularSymbol';
+import { guessLetter } from '../src/logic/guessLetter';
+import { games, Game } from '../src/domain/Game';
+import { Guess } from '../src/domain/Guess';
+import { connect } from '../src/db/connect';
+import { CONFIG } from '../src/config';
+import {
+  TEST_STATUSES_VALID_LETTERS,
+  TEST_STATUSES_VALID_WORDS,
+  TEST_STATUSES_SINGLE_LETTER,
+  TEST_STATUSES_SINGLE_WORD,
+  TEST_STATUSES_INVALID_MULTILETTERS,
+  TEST_STATUSES_INVALID_MULTIWORDS,
+  TEST_STATUSES_SOME_VALID_LETTERS,
+  TEST_STATUSES_SOME_VALID_WORDS
+} from './fixtures';
+
+// Setup
+(async () => {
+  await connect(CONFIG.MONGO_URL);
+  games.current = Game.mock();
+})();
+
+describe('Clean Status', () => {
+  it('Single Letter - CS', () => {
+    const input = '@galgjebot A';
+    const value = cleanStatus(input);
+    const expected = 'a';
+
+    expect(value)
+      .withContext(`Got '${value}', expected '${expected}'`)
+      .toEqual(expected)
+  });
+
+  it('Single Word - CS', () => {
+    const input = '@galgjebot VeeziEkte';
+    const value = cleanStatus(input);
+    const expected = 'veeziekte';
+
+    expect(value)
+      .withContext(`Got '${value}', expected '${expected}'`)
+      .toEqual(expected)
+  });
+
+  it('Extra Whitespace w/ Single Letter - CS', () => {
+    const input = '@galgjebot    A';
+    const value = cleanStatus(input);
+    const expected = 'a';
+
+    expect(value)
+      .withContext(`Got '${value}', expected '${expected}'`)
+      .toEqual(expected)
+  });
+
+  it('Letter w/ Accent - CS', () => {
+    const input = '@galgjebot ä';
+    const value = cleanStatus(input);
+    const expected = 'ä';
+
+    expect(value)
+      .withContext(`Got '${value}', expected '${expected}'`)
+      .toEqual(expected)
   });
 });
 
-// Expect Letters: ["a", "c"]
-    // Expect Words: []
-    const TEST_STATUSES_VALID_LETTERS = [
-      {text: "@galgjebot A"},
-      {text: "@galgjebot A"},
-      {text: "@galgjebot a"},
-      {text: "@galgjebot a"},
-      {text: "@galgjebot c"},
-      {text: "@galgjebot c"},
-      {text: "@galgjebot c"}
-    ];
-    // Expect Letters: ["a"]
-    // Expect Words: ["veeziekte", "kutromy", "sjon"]
-    const TEST_STATUSES_VALID_WORDS = [
-      {text: "@galgjebot veeziekte"},
-      {text: "@galgjebot kutromy"},
-      {text: "@galgjebot veeziekte"},
-      {text: "@galgjebot sjon"},
-      {text: "@galgjebot a"},
-      {text: "@galgjebot A"}
-    ];
-    // Expect Letters: ["a"]
-    // Expect Words: []
-    const TEST_STATUSES_SINGLE_LETTER = [
-      {text: "@galgjebot A"}
-    ];
-    // Expect Letters: []
-    // Expect Words: ["rutkomy"]
-    const TEST_STATUSES_SINGLE_WORD = [
-      {text: "@galgjebot rutkomy"}
-    ];
-    // Expect: false
-    const TEST_STATUSES_INVALID_MULTILETTERS = [
-      {text: "@galgjebot a b x"},
-      {text: "@galgjebot c y k a b l y a t"}
-    ];
-    // Expect: false
-    const TEST_STATUSES_INVALID_MULTIWORDS = [
-      {text: "@galgjebot er was eens"},
-      {text: "@galgjebot een heks genaamd romy"}
-    ];
-    // Expect Letters: ["a", "b"]
-    // Expect Words: []
-    const TEST_STATUSES_SOME_VALID_LETTERS = [
-      {text: "@galgjebot a"},
-      {text: "@galgjebot ongeldige status"},
-      {text: "@galgjebot A"},
-      {text: "@galgjebot B"},
-      {text: "@galgjebot doe eens lief"},
-    ];
-    // Expect Letters: []
-    // Expert Words: ["romy"]
-    const TEST_STATUSES_SOME_VALID_WORDS = [
-      {text: "@galgjebot er was eens"},
-      {text: "@galgjebot een heks genaamd"},
-      {text: "@galgjebot romy"},
-    ];
+describe('Valid Status Checker', () => {
+  it('Single Letter - VS', () => {
+    const input = '@galgjebot a';
+    const value = isValidStatus(input);
+    const expected = true;
 
-    QUnit.module("Clean Status")
-    QUnit.test("Single Letter", function( assert ) {
-      let input = "@galgjebot A";
-      let value = cleanStatus(input);
-      let expected = "a"
-      assert.deepEqual(value, expected, `Got '${value}', expected '${expected}'.`);
-    });
+    expect(value)
+      .withContext(`Got '${value}', expected '${expected}'`)
+      .toEqual(expected)
+  });
 
-    QUnit.test("Single Word", function( assert ) {
-      let input = "@galgjebot VeeziEkte";
-      let value = cleanStatus(input);
-      let expected = "veeziekte"
-      assert.deepEqual(value, expected, `Got '${value}', expected '${expected}'.`);
-    });
+  it('Single Word - VS', () => {
+    const input = '@galgjebot sjon';
+    const value = isValidStatus(input);
+    const expected = true;
 
-    QUnit.test("Extra Whitespace w/ Single Letter", function( assert ) {
-      let input = "@galgjebot    A";
-      let value = cleanStatus(input);
-      let expected = "a"
-      assert.deepEqual(value, expected, `Got '${value}', expected '${expected}'.`);
-    });
+    expect(value)
+      .withContext(`Got '${value}', expected '${expected}'`)
+      .toEqual(expected)
+  });
 
-    QUnit.test("Letter w/ Accent", function( assert ) {
-      let input = "@galgjebot ä";
-      let value = cleanStatus(input);
-      let expected = "ä"
-      assert.deepEqual(value, expected, `Got '${value}', expected '${expected}'.`);
-    });
+  it('Multiple Letters - VS', () => {
+    const input = '@galgjebot A B C';
+    const value = isValidStatus(input);
+    const expected = false;
 
-    QUnit.module("Valid Status Check")
-    QUnit.test("Single Letter", function( assert ) {
-      let input = "@galgjebot a";
-      let value = isValidStatus(input);
-      let expected = true;
-      assert.deepEqual(value, expected, `Got '${value}', expected '${expected}'.`);
-    });
+    expect(value)
+      .withContext(`Got '${value}', expected '${expected}'`)
+      .toEqual(expected)
+  });
 
-    QUnit.test("Single Word", function( assert ) {
-      let input = "@galgjebot sjon";
-      let value = isValidStatus(input);
-      let expected = true;
-      assert.deepEqual(value, expected, `Got '${value}', expected '${expected}'.`);
-    });
+  it('Multiple Words - VS', () => {
+    const input = '@galgjebot dit is een zin met meerdere woorden';
+    const value = isValidStatus(input);
+    const expected = false;
 
-    QUnit.test("Multiple Letters", function( assert ) {
-      let input = "@galgjebot A B C";
-      let value = isValidStatus(input);
-      let expected = false;
-      assert.deepEqual(value, expected, `Got '${value}', expected '${expected}'.`);
-    });
+    expect(value)
+      .withContext(`Got '${value}', expected '${expected}'`)
+      .toEqual(expected)
+  });
+});
 
-    QUnit.test("Multiple Words", function( assert ) {
-      let input = "@galgjebot niemand gaat toch zo ver lezen in de unit tests dus hier kan ik wel zeggen dat jij lief bent <3";
-      let value = isValidStatus(input);
-      let expected = false;
-      assert.deepEqual(value, expected, `Got '${value}', expected '${expected}'.`);
-    });
+describe('Popular Symbol Finder', () => {
+  it('Valid Letters - PSF ', () => {
+    const valueLetters = getPopularSymbol(TEST_STATUSES_VALID_LETTERS as unknown as ExtendedTweet[], true);
+    const valueWords = getPopularSymbol(TEST_STATUSES_VALID_LETTERS as unknown as ExtendedTweet[]);
+    const expectedLetters = ['a', 'c'];
+    const expectedWords: string[] = [];
 
-    QUnit.module("Popular Symbol Finder");
-    QUnit.test("Valid Letters", function( assert ) {
-      let valueLetters = getPopularSymbol(TEST_STATUSES_VALID_LETTERS, true);
-      let valueWords = getPopularSymbol(TEST_STATUSES_VALID_LETTERS);
-      let expectedLetters = ["a", "c"];
-      let expectedWords = [];
-      assert.deepEqual(valueLetters, expectedLetters, `Got letter(s) '${valueLetters}', expected letter(s) '${expectedLetters}'.`);
-      assert.deepEqual(valueWords, expectedWords, `Got word(s) '${valueWords}', expected word(s) '${expectedWords}'.`);
-    });
+    expect(valueLetters)
+      .withContext(`Got letter(s) '${valueLetters}', expected letter(s) '${expectedLetters}'`)
+      .toEqual(expectedLetters)
 
-    QUnit.test("Valid Words", function( assert ) {
-      let valueLetters = getPopularSymbol(TEST_STATUSES_VALID_WORDS, true);
-      let valueWords = getPopularSymbol(TEST_STATUSES_VALID_WORDS);
-      let expectedLetters = ["a"];
-      let expectedWords = ["veeziekte", "kutromy", "sjon"];
-      assert.deepEqual(valueLetters, expectedLetters, `Got letter(s) '${valueLetters}', expected letter(s) '${expectedLetters}'.`);
-      assert.deepEqual(valueWords, expectedWords, `Got word(s) '${valueWords}', expected word(s) '${expectedWords}'.`);
-    });
+    expect(valueWords)
+      .withContext(`Got word(s) '${valueWords}', expected word(s) '${expectedWords}'`)
+      .toEqual(expectedWords)
+  });
 
-    QUnit.test("Single Letter", function( assert ) {
-      let valueLetters = getPopularSymbol(TEST_STATUSES_SINGLE_LETTER, true);
-      let valueWords = getPopularSymbol(TEST_STATUSES_SINGLE_LETTER);
-      let expectedLetters = ["a"];
-      let expectedWords = [];
-      assert.deepEqual(valueLetters, expectedLetters, `Got letter(s) '${valueLetters}', expected letter(s) '${expectedLetters}'.`);
-      assert.deepEqual(valueWords, expectedWords, `Got word(s) '${valueWords}', expected word(s) '${expectedWords}'.`);
-    });
+  it('Valid Words - PSF ', () => {
+    const valueLetters = getPopularSymbol(TEST_STATUSES_VALID_WORDS as unknown as ExtendedTweet[], true);
+    const valueWords = getPopularSymbol(TEST_STATUSES_VALID_WORDS as unknown as ExtendedTweet[]);
+    const expectedLetters = ['a'];
+    const expectedWords = ['veeziekte', 'wegracer', 'sjon'];
 
-    QUnit.test("Single Word", function( assert ) {
-      let valueLetters = getPopularSymbol(TEST_STATUSES_SINGLE_WORD, true);
-      let valueWords = getPopularSymbol(TEST_STATUSES_SINGLE_WORD);
-      let expectedLetters = [];
-      let expectedWords = ["rutkomy"];
-      assert.deepEqual(valueLetters, expectedLetters, `Got letter(s) '${valueLetters}', expected letter(s) '${expectedLetters}'.`);
-      assert.deepEqual(valueWords, expectedWords, `Got word(s) '${valueWords}', expected word(s) '${expectedWords}'.`);
-    });
+    expect(valueLetters)
+      .withContext(`Got letter(s) '${valueLetters}', expected letter(s) '${expectedLetters}'`)
+      .toEqual(expectedLetters)
 
-    QUnit.test("Multiple Letters", function( assert ) {
-      let valueLetters = getPopularSymbol(TEST_STATUSES_INVALID_MULTILETTERS, true);
-      let valueWords = getPopularSymbol(TEST_STATUSES_INVALID_MULTILETTERS);
-      let expectedLetters = false;
-      let expectedWords = false;
-      assert.deepEqual(valueLetters, expectedLetters, `Got letter(s) '${valueLetters}', expected letter(s) '${expectedLetters}'.`);
-      assert.deepEqual(valueWords, expectedWords, `Got word(s) '${valueWords}', expected word(s) '${expectedWords}'.`);
-    });
+    expect(valueWords)
+      .withContext(`Got word(s) '${valueWords}', expected word(s) '${expectedWords}'`)
+      .toEqual(expectedWords)
+  });
 
-    QUnit.test("Multiple Words", function( assert ) {
-      let valueLetters = getPopularSymbol(TEST_STATUSES_INVALID_MULTIWORDS, true);
-      let valueWords = getPopularSymbol(TEST_STATUSES_INVALID_MULTIWORDS);
-      let expectedLetters = false;
-      let expectedWords = false;
-      assert.deepEqual(valueLetters, expectedLetters, `Got letter(s) '${valueLetters}', expected letter(s) '${expectedLetters}'.`);
-      assert.deepEqual(valueWords, expectedWords, `Got word(s) '${valueWords}', expected word(s) '${expectedWords}'.`);
-    });
+  it('Single Letter - PSF ', () => {
+    const valueLetters = getPopularSymbol(TEST_STATUSES_SINGLE_LETTER as unknown as ExtendedTweet[], true);
+    const valueWords = getPopularSymbol(TEST_STATUSES_SINGLE_LETTER as unknown as ExtendedTweet[]);
+    const expectedLetters = ['a'];
+    const expectedWords: string[] = [];
 
-    QUnit.test("Some Valid Letters", function( assert ) {
-      let valueLetters = getPopularSymbol(TEST_STATUSES_SOME_VALID_LETTERS, true);
-      let valueWords = getPopularSymbol(TEST_STATUSES_SOME_VALID_LETTERS);
-      let expectedLetters = ["a", "b"];
-      let expectedWords = [];
-      assert.deepEqual(valueLetters, expectedLetters, `Got letter(s) '${valueLetters}', expected letter(s) '${expectedLetters}'.`);
-      assert.deepEqual(valueWords, expectedWords, `Got word(s) '${valueWords}', expected word(s) '${expectedWords}'.`);
-    });
+    expect(valueLetters)
+      .withContext(`Got letter(s) '${valueLetters}', expected letter(s) '${expectedLetters}'`)
+      .toEqual(expectedLetters)
 
-    QUnit.test("Some Valid Words", function( assert ) {
-      let valueLetters = getPopularSymbol(TEST_STATUSES_SOME_VALID_WORDS, true);
-      let valueWords = getPopularSymbol(TEST_STATUSES_SOME_VALID_WORDS);
-      let expectedLetters = [];
-      let expectedWords = ["romy"];
-      assert.deepEqual(valueLetters, expectedLetters, `Got letter(s) '${valueLetters}', expected letter(s) '${expectedLetters}'.`);
-      assert.deepEqual(valueWords, expectedWords, `Got word(s) '${valueWords}', expected word(s) '${expectedWords}'.`);
-    });
+    expect(valueWords)
+      .withContext(`Got word(s) '${valueWords}', expected word(s) '${expectedWords}'`)
+      .toEqual(expectedWords)
+  });
 
-    QUnit.module("Guess Parsers");
-    QUnit.test("Wrong Letter", function( assert ) {
-      let input = "a";
-      let value = guessLetter(input);
-      let expected = GUESS_ENUM.WRONG;
-      assert.deepEqual(value, expected, `Got '${value}', expected '${expected}'.`);
-    });
+  it('Single Word - PSF ', () => {
+    const valueLetters = getPopularSymbol(TEST_STATUSES_SINGLE_WORD as unknown as ExtendedTweet[], true);
+    const valueWords = getPopularSymbol(TEST_STATUSES_SINGLE_WORD as unknown as ExtendedTweet[]);
+    const expectedLetters: string[] = [];
+    const expectedWords = ['veeziekte'];
 
-    QUnit.test("Repeated Letter", function( assert ) {
-      let input = "a";
-      let value = guessLetter(input);
-      let expected = GUESS_ENUM.REPEAT;
-      assert.deepEqual(value, expected, `Got '${value}', expected '${expected}'.`);
-    });
+    expect(valueLetters)
+      .withContext(`Got letter(s) '${valueLetters}', expected letter(s) '${expectedLetters}'`)
+      .toEqual(expectedLetters)
+
+    expect(valueWords)
+      .withContext(`Got word(s) '${valueWords}', expected word(s) '${expectedWords}'`)
+      .toEqual(expectedWords)
+  });
+
+  it('Multiple Letters - PSF ', () => {
+    const valueLetters = getPopularSymbol(TEST_STATUSES_INVALID_MULTILETTERS as unknown as ExtendedTweet[], true);
+    const valueWords = getPopularSymbol(TEST_STATUSES_INVALID_MULTILETTERS as unknown as ExtendedTweet[]);
+    const expectedLetters = false;
+    const expectedWords = false;
+
+    expect(valueLetters)
+      .withContext(`Got letter(s) '${valueLetters}', expected letter(s) '${expectedLetters}'`)
+      .toEqual(expectedLetters)
+
+    expect(valueWords)
+      .withContext(`Got word(s) '${valueWords}', expected word(s) '${expectedWords}'`)
+      .toEqual(expectedWords)
+  });
+
+  it('Multiple Words - PSF ', () => {
+    const valueLetters = getPopularSymbol(TEST_STATUSES_INVALID_MULTIWORDS as unknown as ExtendedTweet[], true);
+    const valueWords = getPopularSymbol(TEST_STATUSES_INVALID_MULTIWORDS as unknown as ExtendedTweet[]);
+    const expectedLetters = false;
+    const expectedWords = false;
+
+    expect(valueLetters)
+      .withContext(`Got letter(s) '${valueLetters}', expected letter(s) '${expectedLetters}'`)
+      .toEqual(expectedLetters)
+
+    expect(valueWords)
+      .withContext(`Got word(s) '${valueWords}', expected word(s) '${expectedWords}'`)
+      .toEqual(expectedWords)
+  });
+
+  it('Some Valid Letters - PSF ', () => {
+    const valueLetters = getPopularSymbol(TEST_STATUSES_SOME_VALID_LETTERS as unknown as ExtendedTweet[], true);
+    const valueWords = getPopularSymbol(TEST_STATUSES_SOME_VALID_LETTERS as unknown as ExtendedTweet[]);
+    const expectedLetters = ['a', 'b'];
+    const expectedWords: string[] = [];
+
+    expect(valueLetters)
+      .withContext(`Got letter(s) '${valueLetters}', expected letter(s) '${expectedLetters}'`)
+      .toEqual(expectedLetters)
+
+    expect(valueWords)
+      .withContext(`Got word(s) '${valueWords}', expected word(s) '${expectedWords}'`)
+      .toEqual(expectedWords)
+  });
+
+  it('Some Valid Words - PSF ', () => {
+    const valueLetters = getPopularSymbol(TEST_STATUSES_SOME_VALID_WORDS as unknown as ExtendedTweet[], true);
+    const valueWords = getPopularSymbol(TEST_STATUSES_SOME_VALID_WORDS as unknown as ExtendedTweet[]);
+    const expectedLetters: string[] = [];
+    const expectedWords = ['rutte'];
+
+    expect(valueLetters)
+      .withContext(`Got letter(s) '${valueLetters}', expected letter(s) '${expectedLetters}'`)
+      .toEqual(expectedLetters)
+
+    expect(valueWords)
+      .withContext(`Got word(s) '${valueWords}', expected word(s) '${expectedWords}'`)
+      .toEqual(expectedWords)
+  });
+});
+
+describe('Guess Parsers', () => {
+  it('Wrong Letter - GP', () => {
+    const input = 'a';
+    const value = guessLetter(input);
+    const expected = Guess.WRONG;
+
+    expect(value)
+      .withContext(`Got '${Guess[value]}', expected '${Guess[expected]}'`)
+      .toEqual(expected)
+  });
+
+  it('Repeated Letter - GP', () => {
+    const input = 'a';
+    const value = guessLetter(input);
+    const expected = Guess.REPEAT;
+
+    expect(value)
+      .withContext(`Got '${Guess[value]}', expected '${Guess[expected]}'`)
+      .toEqual(expected)
+  });
+});
