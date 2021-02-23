@@ -19,5 +19,5 @@ export const CONFIG = {
   },
   MIN_WORD_LENGTH: Number.parseInt((process.env.MIN_WORD_LENGTH as string) ?? '3'),
   TWITTER_HANDLE: process.env.TWITTER_HANDLE ?? 'galgjebot',
-  MONGO_URL: process.env.MONGO_URL as string
+  MONGO_URL: (process.env.MONGO_URL as string) ?? 'mongodb://localhost:27017/galgjebot'
 }

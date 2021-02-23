@@ -70,7 +70,6 @@ export class Game {
   }
 
   static mock(): Game {
-    // TODO: Return instance of game with pre-populated properties for testing purposes
     return new Game('sjon', 6);
   }
 }
