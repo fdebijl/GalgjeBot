@@ -232,23 +232,45 @@ describe('Popular Symbol Finder', () => {
 });
 
 describe('Guess Parsers', () => {
-  it('Wrong Letter - GP', () => {
-    const input = 'a';
-    const value = guessLetter(input);
-    const expected = Guess.WRONG;
+  it('Correct Letter - GP', (done) => {
+    setTimeout(() => {
+      const input = 's';
+      const value = guessLetter(input);
+      const expected = Guess.RIGHT;
 
-    expect(value)
-      .withContext(`Got '${Guess[value]}', expected '${Guess[expected]}'`)
-      .toEqual(expected)
+      expect(value)
+        .withContext(`Got '${Guess[value]}', expected '${Guess[expected]}'`)
+        .toEqual(expected);
+
+      done();
+    }, 500);
   });
 
-  it('Repeated Letter - GP', () => {
-    const input = 'a';
-    const value = guessLetter(input);
-    const expected = Guess.REPEAT;
+  it('Wrong Letter - GP', (done) => {
+    setTimeout(() => {
+      const input = 'a';
+      const value = guessLetter(input);
+      const expected = Guess.WRONG;
 
-    expect(value)
-      .withContext(`Got '${Guess[value]}', expected '${Guess[expected]}'`)
-      .toEqual(expected)
+      expect(value)
+        .withContext(`Got '${Guess[value]}', expected '${Guess[expected]}'`)
+        .toEqual(expected);
+
+      done();
+    }, 750);
+  });
+
+  it('Repeated Letter - GP', (done) => {
+    setTimeout(() => {
+      const input = 'a';
+      const value = guessLetter(input);
+      const expected = Guess.REPEAT;
+
+      expect(value)
+        .withContext(`Got '${Guess[value]}', expected '${Guess[expected]}'`)
+        .toEqual(expected);
+
+      done();
+    }, 1000);
   });
 });
