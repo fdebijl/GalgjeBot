@@ -19,22 +19,29 @@ export let roundLoop: NodeJS.Timeout;
 
 // Setup a single game
 const setupGame = async (restoreFromDB = false, restoredGame?: Game): Promise<void> => {
-  const nextGameTime = moment().tz('Europe/Amsterdam').add(CONFIG.GAME_INTERVAL, 'm').format('HH:MM');
+  const nextGameTime = moment().add(CONFIG.GAME_INTERVAL, 'm').format('HH:mm');
   await PersistentValueStore.setnextGameTime(nextGameTime);
-  clog.log(`Setting up game - next one is scheduled to start at ${nextGameTime}`);
 
   if (restoreFromDB && restoredGame) {
     games.current = new Game(restoredGame.word.join(''), restoredGame?.difficulty, restoredGame);
+    clog.log(`Restoring game no. ${games.current.gameNumber} from DB - next one is scheduled to start at ${nextGameTime}`)
+
+    // Continue the game by issuing a game round
+    gameRound();
   } else {
     const lastDifficulty = await PersistentValueStore.getLastDifficulty();
     const difficulty = lastDifficulty >= CONFIG.MIN_WORD_LENGTH ? lastDifficulty : CONFIG.MIN_WORD_LENGTH;
     const selectedWord = await getWord(difficulty);
     games.current = new Game(selectedWord, difficulty)
     games.current.phase = CONFIG.DEBUG ? PHASE.length - 2 : 0;
-  }
 
-  // Send out the first tweet
-  sendCompiledTweet();
+    setTimeout(() => {
+      // Send out the first tweet
+      // This is inside a small timeout to ensure the gameNumber is retrieved properly
+      clog.log(`Set up new game with number ${(games.current as Game).gameNumber} - next one is scheduled to start at ${nextGameTime}`);
+      sendCompiledTweet();
+    }, 500)
+  }
 
   // Start round loop interval
   // Execute a round with full game rules every X minutes
@@ -58,7 +65,8 @@ const setupGame = async (restoreFromDB = false, restoredGame?: Game): Promise<vo
   // Main loop - start a game every X minutes
   setInterval(async () => {
     if (games?.current?.inProgress) {
-      const nextGameTime = await PersistentValueStore.getnextGameTime();
+      const nextGameTime = moment().add(CONFIG.GAME_INTERVAL, 'm').format('HH:mm');
+      await PersistentValueStore.setnextGameTime(nextGameTime);
       clog.log(`Game is already in progress, waiting one cycle to start a new one. Projected start date is ${nextGameTime}`)
       return;
     }
