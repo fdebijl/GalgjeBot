@@ -22,7 +22,7 @@ export const guessLetter = (letter: string): Guess => {
 
   const indices = getIndices(games.current.word.join(''), letter);
 
-  clog.log(`Letter ${letter} got indices ${indices} on word ${games.current.word.join('')}`, LOGLEVEL.DEBUG);
+  clog.log(`The letter ${letter} got ${indices.length > 0 ? `indices ${indices}` : 'no indices'} on word ${games.current.word.join('')}`, LOGLEVEL.DEBUG);
 
   // Push it to guessed letter array as either option (wrong or right) from this point onward constitutes a valid guess
   games.current.guessed.letters.push(letter);

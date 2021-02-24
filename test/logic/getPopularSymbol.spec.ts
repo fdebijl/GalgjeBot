@@ -1,3 +1,5 @@
+/// <reference types="../../" />
+
 import { getPopularSymbol } from '../../src/logic/getPopularSymbol';
 
 import {

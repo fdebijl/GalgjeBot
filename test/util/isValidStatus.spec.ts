@@ -21,6 +21,16 @@ describe('Valid Status Checker', () => {
       .toEqual(expected)
   });
 
+  it('Non-alphanumeric Single Word', () => {
+    const input = '@galgjebot nogwat-deskundige';
+    const value = isValidStatus(input);
+    const expected = true;
+
+    expect(value)
+      .withContext(`Got '${value}', expected '${expected}'`)
+      .toEqual(expected)
+  });
+
   it('Multiple Letters', () => {
     const input = '@galgjebot A B C';
     const value = isValidStatus(input);
