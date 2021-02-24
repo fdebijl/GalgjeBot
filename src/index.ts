@@ -55,18 +55,18 @@ const setupGame = async (restoreFromDB = false, restoredGame?: Game): Promise<vo
   await connect(CONFIG.MONGO_URL);
   await initTwitter();
   const restoredGame = await restoreGame();
+  const nextGameTimeString = await PersistentValueStore.getnextGameTime();
   if (restoredGame) {
     setupGame(true, restoredGame);
-  } else {
+  } else if (nextGameTimeString) {
     // Check if we should wait to start the new game
-    const nextGameTimeString = await PersistentValueStore.getnextGameTime();
     const nextGameTime = moment(nextGameTimeString);
     const now = moment();
     if (now.isBefore(nextGameTime, 'minutes')) {
       // We haven't passed the nextGameTime so we need to wait before setting up a new game
       const diff = Math.abs(now.diff(nextGameTime, 'milliseconds')) + 5000;
+      clog.log(`Waiting ${diff / 1000} seconds before starting a new game to comply with next game time`, LOGLEVEL.DEBUG);
       setTimeout(() => {
-        clog.log(`Waiting ${diff / 1000} seconds before starting a new game to comply with next game time`, LOGLEVEL.DEBUG);
         setupGame();
       }, diff)
     } else {
@@ -74,6 +74,9 @@ const setupGame = async (restoreFromDB = false, restoredGame?: Game): Promise<vo
       clog.log('Ready to start new game, past next game time', LOGLEVEL.DEBUG);
       setupGame();
     }
+  } else {
+    clog.log('No next game time set, starting new game', LOGLEVEL.DEBUG);
+    setupGame();
   }
 
   // Main loop - start a game every X minutes
