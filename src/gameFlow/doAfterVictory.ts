@@ -47,7 +47,7 @@ export const doAfterVictory = async (): Promise<void> => {
 
   // Increase difficulty
   let lastDifficulty = await PersistentValueStore.getLastDifficulty();
-  lastDifficulty = lastDifficulty + 2;
+  lastDifficulty = lastDifficulty - 2;
   await PersistentValueStore.setLastDifficulty(lastDifficulty);
 
   stopGame();
