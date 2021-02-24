@@ -71,6 +71,7 @@ const setupGame = async (restoreFromDB = false, restoredGame?: Game): Promise<vo
       }, diff)
     } else {
       // We are past the nextGameTime so we are cleared to start a new one
+      clog.log('Ready to start new game, past next game time', LOGLEVEL.DEBUG);
       setupGame();
     }
   }
