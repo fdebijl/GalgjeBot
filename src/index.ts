@@ -19,7 +19,7 @@ export let roundLoop: NodeJS.Timeout;
 
 // Setup a single game
 const setupGame = async (restoreFromDB = false, restoredGame?: Game): Promise<void> => {
-  const nextGameTime = moment().add(CONFIG.GAME_INTERVAL, 'm').format('HH:mm');
+  const nextGameTime = moment().tz('Europe/Amsterdam').add(CONFIG.GAME_INTERVAL, 'm').format('HH:mm');
   await PersistentValueStore.setnextGameTime(nextGameTime);
 
   if (restoreFromDB && restoredGame) {
@@ -65,7 +65,7 @@ const setupGame = async (restoreFromDB = false, restoredGame?: Game): Promise<vo
   // Main loop - start a game every X minutes
   setInterval(async () => {
     if (games?.current?.inProgress) {
-      const nextGameTime = moment().add(CONFIG.GAME_INTERVAL, 'm').format('HH:mm');
+      const nextGameTime = moment().tz('Europe/Amsterdam').add(CONFIG.GAME_INTERVAL, 'm').format('HH:mm');
       await PersistentValueStore.setnextGameTime(nextGameTime);
       clog.log(`Game is already in progress, waiting one cycle to start a new one. Projected start date is ${nextGameTime}`)
       return;
