@@ -47,7 +47,7 @@ export const getPopularSymbol = (statuses: ExtendedTweet[], limitToSingleLetter 
     });
   }
 
-  if (popular && popular.length > 0) {
+  if (popular) {
     clog.log(`Popular ${limitToSingleLetter ? 'letters' : 'words'} in replies are: ${popular}`, LOGLEVEL.DEBUG);
   } else {
     clog.log(`Could not determine a popular ${limitToSingleLetter ? 'letter' : 'word'} in replies`, LOGLEVEL.DEBUG);

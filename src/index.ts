@@ -1,5 +1,5 @@
 import moment from 'moment-timezone';
-import { Clog } from '@fdebijl/clog';
+import { Clog, LOGLEVEL } from '@fdebijl/clog';
 
 import { CONFIG } from './config';
 import { initTwitter } from './twitter/initTwitter';
@@ -64,15 +64,16 @@ const setupGame = async (restoreFromDB = false, restoredGame?: Game): Promise<vo
     const now = moment();
     if (now.isBefore(nextGameTime, 'minutes')) {
       // We haven't passed the nextGameTime so we need to wait before setting up a new game
+      const diff = Math.abs(now.diff(nextGameTime, 'milliseconds')) + 5000;
       setTimeout(() => {
+        clog.log(`Waiting ${diff / 1000} seconds before starting a new game to comply with next game time`, LOGLEVEL.DEBUG);
         setupGame();
-      }, Math.abs(now.diff(nextGameTime, 'milliseconds')))
+      }, diff)
     } else {
       // We are past the nextGameTime so we are cleared to start a new one
       setupGame();
     }
   }
-
 
   // Main loop - start a game every X minutes
   setInterval(async () => {
