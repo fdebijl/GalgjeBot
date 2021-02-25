@@ -26,6 +26,7 @@ jobs:
         run: npm test
         env:
           CI: true
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   lint:
     name: Lint
     runs-on: ubuntu-18.04
