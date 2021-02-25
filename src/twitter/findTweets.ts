@@ -1,4 +1,4 @@
-import { PersistentValueStore } from '../db/persistentValues';
+import { games, Game } from '../domain/Game';
 import { T } from './initTwitter';
 import { Twitter } from 'twit';
 import { Clog, LOGLEVEL } from '@fdebijl/clog';
@@ -7,7 +7,7 @@ const clog = new Clog();
 
 export const findTweets = async (inReplyTo?: string): Promise<ExtendedTweet[] | false> => {
   return new Promise(async (resolve) => {
-    const lastStatus = await PersistentValueStore.getlastStatus();
+    const lastStatus = (games.current as Game).statuses[(games.current as Game).statuses.length - 1].id_str;
     inReplyTo = inReplyTo ? inReplyTo : lastStatus;
 
     // Search Twitter for tweets directed at the bot account and that match any of our targets.

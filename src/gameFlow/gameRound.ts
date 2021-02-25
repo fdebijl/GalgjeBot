@@ -1,7 +1,6 @@
 import { getPopularSymbol } from '../logic/getPopularSymbol';
 import { games } from '../domain/Game';
 import { Clog, LOGLEVEL } from '@fdebijl/clog';
-import { PersistentValueStore } from '../db/persistentValues';
 import { findTweets } from '../twitter/findTweets';
 import { runWinLossChecks } from './runWinLossCheck';
 import { Guess } from '../domain/Guess';
@@ -76,7 +75,7 @@ export const gameRound = async (): Promise<void> => {
   }
 
   // Send the main tweet with the gallow, guessed words and all
-  const lastStatus = await PersistentValueStore.getlastStatus();
+  const lastStatus = games.current.statuses[games.current.statuses.length - 1].id_str;
   sendCompiledTweet(lastStatus);
 
   // Run the win/loss checks to see if the phase has incremented to the point that we lost, or if the last letter guessed completed the word and we won

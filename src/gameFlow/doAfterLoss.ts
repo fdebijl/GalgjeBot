@@ -1,8 +1,11 @@
 import { games } from '../domain/Game';
+import { Result } from '../domain/Result';
 import { Clog, LOGLEVEL } from '@fdebijl/clog';
-import { PersistentValueStore } from '../db/persistentValues';
 import { stopGame } from './stopGame';
 import { sendUncompiledTweet } from '../twitter/sendUncompiledTweet';
+
+import moment from 'moment-timezone';
+import { CONFIG } from '../config';
 
 const clog = new Clog();
 
@@ -13,15 +16,11 @@ export const doAfterLoss = async (): Promise<void> => {
   }
 
   clog.log('Game lost', LOGLEVEL.INFO)
-  // Game over, set up new game
-  const lastStatus = await PersistentValueStore.getlastStatus();
-  const nextGameTime = await PersistentValueStore.getnextGameTime();
+  const lastStatus = games.current.statuses[games.current.statuses.length - 1].id_str;
+  const nextGameTime = moment().tz('Europe/Amsterdam').add(CONFIG.GAME_INTERVAL, 'minutes').format('HH:mm');
   sendUncompiledTweet(`Verloren :(\n\nHet woord was '${games.current.word.join('')}'\n\nDe volgende ronde start om ${nextGameTime}`, lastStatus);
 
-  // Reduce difficulty
-  let lastDifficulty = await PersistentValueStore.getLastDifficulty();
-  lastDifficulty = lastDifficulty + 2;
-  await PersistentValueStore.setLastDifficulty(lastDifficulty);
+  games.current.result = Result.LOSS
 
   stopGame();
 

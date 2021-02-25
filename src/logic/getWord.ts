@@ -1,6 +1,7 @@
 import { Clog, LOGLEVEL } from '@fdebijl/clog';
 import fs from 'fs';
 import { CONFIG } from '../config';
+import { isValidWord } from '../util/isValidWord';
 const clog = new Clog();
 
 export const getWord = async (difficulty: number): Promise<string> => {
@@ -24,8 +25,8 @@ export const getWord = async (difficulty: number): Promise<string> => {
 
       let randomIndex = Math.floor(Math.random() * eligibleWords.length);
 
-      // We don't want multi-part words
-      while (eligibleWords[randomIndex].split(' ').length > 1) {
+      // We don't want multi-part words or words with non-alphanumerical characters
+      while (!isValidWord(eligibleWords[randomIndex])) {
         randomIndex = Math.floor(Math.random() * eligibleWords.length);
       }
 
