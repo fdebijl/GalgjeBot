@@ -1,7 +1,7 @@
 import moment from 'moment-timezone';
 import { Clog, LOGLEVEL } from '@fdebijl/clog';
 
-import { CONFIG } from './config';
+import { CONFIG, isDev } from './config';
 import { initTwitter } from './twitter/initTwitter';
 import { games, Game } from './domain/Game';
 import { getWord } from './logic/getWord';
@@ -51,7 +51,8 @@ export const setupGame = async (restoreFromDB = false, restoredGame?: Game): Pro
 
 // Start a game on first boot
 (async () => {
-  await connect(CONFIG.MONGO_URL);
+  const mongoUrl = isDev ? CONFIG.MONGO_TEST_URL : CONFIG.MONGO_URL;
+  await connect(mongoUrl);
   await initTwitter();
 
   const lastGame = await getLastGame();

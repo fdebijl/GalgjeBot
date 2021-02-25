@@ -4,6 +4,8 @@ if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
 }
 
+export const isDev = process.env.NODE_ENV === 'development';
+
 export const CONFIG = {
   /** If game is running in debug mode */
   DEBUG: process.env.DEBUG,
@@ -22,5 +24,7 @@ export const CONFIG = {
   /** Twitter handle for the bot */
   TWITTER_HANDLE: process.env.TWITTER_HANDLE ?? 'galgjebot',
   /** MongoDB SRV string - defaults to localhost with database galgjebot */
-  MONGO_URL: (process.env.MONGO_URL as string) ?? 'mongodb://localhost:27017/galgjebot'
+  MONGO_URL: (process.env.MONGO_URL as string) ?? 'mongodb://localhost:27017/galgjebot',
+  /** MongoDB SRV string - defaults to localhost with database galgjebot */
+  MONGO_TEST_URL: (process.env.MONGO_TEST_URL as string) ?? 'mongodb://localhost:27017/galgjebottest'
 }
