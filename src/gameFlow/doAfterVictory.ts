@@ -52,7 +52,7 @@ export const doAfterVictory = async (): Promise<void> => {
 
   sendUncompiledTweet(`Gewonnen :D\n\nHet woord was: '${games.current?.word.join('')}' en is geraden door ${winningPlayers}\n\nDe volgende ronde start om ${nextGameTime}`, lastStatus);
 
-  games.current.result = Result.LOSS
+  games.current.result = Result.WIN;
 
   stopGame();
   return;
