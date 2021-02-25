@@ -5,7 +5,7 @@
     "start": "node index.js",
     "compile": "tsc",
     "lint": "eslint \"./src/**/*.ts\" --max-warnings 2",
-    "test": "jasmine-ts --config=jasmine.config.json --random=false"
+    "test": "nyc -e .ts -x \"*.spec.ts\" -x \"dist/**\" -x \"test/**\" --reporter=json jasmine-ts --config=jasmine.config.json --random=false && mv coverage/coverage-final.json coverage/coverage.json && codecov"
   },
   "dependencies": {
     "@fdebijl/clog": "^1.76.0",
@@ -23,11 +23,14 @@
     "@types/twit": "^2.2.28",
     "@typescript-eslint/eslint-plugin": "4.15.2",
     "@typescript-eslint/parser": "4.15.2",
+    "codecov": "^3.8.1",
     "eslint": "7.20.0",
     "eslint-plugin-jasmine": "4.1.2",
     "jasmine": "3.6.4",
     "jasmine-spec-reporter": "6.0.0",
     "jasmine-ts": "0.3.0",
+    "nyc": "^15.1.0",
+    "source-map-support": "^0.5.19",
     "ts-node": "<8"
   }
 }
