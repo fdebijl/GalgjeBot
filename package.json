@@ -5,6 +5,7 @@
     "start": "node index.js",
     "compile": "tsc",
     "lint": "eslint \"./src/**/*.ts\" --max-warnings 2",
+    "simpletest": "jasmine-ts --config=jasmine.config.json --random=false",
     "test": "nyc -e .ts -x \"*.spec.ts\" -x \"dist/**\" -x \"test/**\" --reporter=json jasmine-ts --config=jasmine.config.json --random=false && mv coverage/coverage-final.json coverage/coverage.json && codecov"
   },
   "dependencies": {
