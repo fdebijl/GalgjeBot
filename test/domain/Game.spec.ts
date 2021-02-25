@@ -1,3 +1,5 @@
+/// <reference types="../../" />
+
 import { Game } from '../../src/domain/Game';
 import { db, connect } from '../../src/db/connect';
 import { getLastGame } from '../../src/db/getLastGame';
