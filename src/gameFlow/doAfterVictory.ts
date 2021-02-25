@@ -32,8 +32,8 @@ export const doAfterVictory = async (): Promise<void> => {
 
   const contributingTweets: ExtendedTweet[] = tweets.filter(tweet => {
     // Only count tweets that added the last correct letter, or the entire word
-    return (cleanStatus(tweet.full_text ?? tweet.text as string).substr(0, 1) == games.current?.guessed.letters[games.current.guessed.letters.length - 1] ||
-            cleanStatus(tweet.full_text ?? tweet.text as string) == games.current?.guessed.words[games.current?.guessed.words.length - 1]) &&
+    return (cleanStatus(tweet.full_text ?? tweet.text as string) === games.current?.guessed.letters[games.current.guessed.letters.length - 1] ||
+            cleanStatus(tweet.full_text ?? tweet.text as string) === games.current?.guessed.words[games.current?.guessed.words.length - 1]) &&
             tweet.user.screen_name != 'galgjebot';
   });
 

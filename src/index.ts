@@ -10,6 +10,7 @@ import { connect } from './db/connect';
 import { sendCompiledTweet } from './twitter/sendCompiledTweet';
 import { gameRound } from './gameFlow/gameRound';
 import { getLastGame } from './db/getLastGame';
+import { Result } from './domain/Result';
 
 const clog = new Clog();
 
@@ -26,7 +27,8 @@ export const setupGame = async (restoreFromDB = false, restoredGame?: Game): Pro
     gameRound();
   } else {
     const lastGame = await getLastGame()
-    const nextDifficulty = lastGame ? lastGame.difficulty : 6;
+    let nextDifficulty = lastGame ? lastGame.difficulty : 6;
+    nextDifficulty = (lastGame as Game).result === Result.WIN ? nextDifficulty - 2 : nextDifficulty + 2;
     const difficulty = nextDifficulty >= CONFIG.MIN_WORD_LENGTH ? nextDifficulty : CONFIG.MIN_WORD_LENGTH;
     const selectedWord = await getWord(difficulty);
     games.current = new Game(selectedWord, difficulty)
