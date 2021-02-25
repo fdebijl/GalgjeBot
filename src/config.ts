@@ -17,7 +17,10 @@ export const CONFIG = {
     access_token: process.env.ACCESS_TOKEN as string,
     access_token_secret: process.env.ACCESS_TOKEN_SECRET as string
   },
+  /** Minimal length that a word needs to be to be picked - defaults to 3 */
   MIN_WORD_LENGTH: Number.parseInt((process.env.MIN_WORD_LENGTH as string) ?? '3'),
+  /** Twitter handle for the bot */
   TWITTER_HANDLE: process.env.TWITTER_HANDLE ?? 'galgjebot',
+  /** MongoDB SRV string - defaults to localhost with database galgjebot */
   MONGO_URL: (process.env.MONGO_URL as string) ?? 'mongodb://localhost:27017/galgjebot'
 }
