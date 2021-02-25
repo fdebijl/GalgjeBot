@@ -2,7 +2,6 @@ import { Clog, LOGLEVEL } from '@fdebijl/clog';
 import { Params } from 'twit';
 
 import { CONFIG } from '../config';
-import { PersistentValueStore } from '../db/persistentValues';
 import { games } from '../domain/Game';
 import { PHASE } from '../domain/Phase';
 import { T } from './initTwitter';
@@ -40,8 +39,6 @@ export const sendCompiledTweet = async (replyToID?: string): Promise<void> => {
       clog.log(`Encountered error when sending tweet: ${err.name}: ${err.message}`, LOGLEVEL.ERROR);
     }
 
-    const lastStatus = await PersistentValueStore.getlastStatus();
-    PersistentValueStore.setsecondToLastStatus(lastStatus)
-    PersistentValueStore.setlastStatus((data as ExtendedTweet).id_str);
+    games.current?.statuses.push(data as ExtendedTweet)
   })
 }

@@ -1,21 +1,28 @@
-import { games } from '../domain/Game';
 import { Clog, LOGLEVEL } from '@fdebijl/clog';
-import { PersistentValueStore } from '../db/persistentValues';
+import moment from 'moment-timezone';
+
+import { games } from '../domain/Game';
+import { Result } from '../domain/Result';
 import { stopGame } from './stopGame';
 import { findTweets } from '../twitter/findTweets';
 import { cleanStatus } from '../util/cleanStatus';
 import { removeDuplicatesFrom } from '../util/removeDuplicatesFrom';
 import { sendUncompiledTweet } from '../twitter/sendUncompiledTweet';
+import { CONFIG } from '../config';
 
 const clog = new Clog();
 
 export const doAfterVictory = async (): Promise<void> => {
+  if (!games.current) {
+    clog.log('Tried to run after loss procedure but no game was running!', LOGLEVEL.ERROR);
+    return;
+  }
+
   clog.log('Game won', LOGLEVEL.INFO);
 
-  const secondToLastStatus = await PersistentValueStore.getsecondToLastStatus();
-  const tweets = await findTweets(secondToLastStatus);
-  const nextGameTime = await PersistentValueStore.getnextGameTime();
-  const lastStatus = await PersistentValueStore.getlastStatus();
+  const lastStatus = games.current.statuses[games.current.statuses.length - 1].id_str;
+  const tweets = await findTweets(lastStatus);
+  const nextGameTime = moment().tz('Europe/Amsterdam').add(CONFIG.GAME_INTERVAL, 'minutes').format('HH:mm');
 
   if (!tweets || tweets?.length === 0) {
     // Fallback if no tweets are found for whatever reason
@@ -45,10 +52,7 @@ export const doAfterVictory = async (): Promise<void> => {
 
   sendUncompiledTweet(`Gewonnen :D\n\nHet woord was: '${games.current?.word.join('')}' en is geraden door ${winningPlayers}\n\nDe volgende ronde start om ${nextGameTime}`, lastStatus);
 
-  // Increase difficulty
-  let lastDifficulty = await PersistentValueStore.getLastDifficulty();
-  lastDifficulty = lastDifficulty - 2;
-  await PersistentValueStore.setLastDifficulty(lastDifficulty);
+  games.current.result = Result.LOSS
 
   stopGame();
   return;

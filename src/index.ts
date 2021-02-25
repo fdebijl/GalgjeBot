@@ -7,10 +7,9 @@ import { games, Game } from './domain/Game';
 import { getWord } from './logic/getWord';
 import { PHASE } from './domain/Phase';
 import { connect } from './db/connect';
-import { PersistentValueStore } from './db/persistentValues';
 import { sendCompiledTweet } from './twitter/sendCompiledTweet';
 import { gameRound } from './gameFlow/gameRound';
-import { restoreGame } from './db/restoreGame';
+import { getLastGame } from './db/getLastGame';
 
 const clog = new Clog();
 
@@ -18,19 +17,17 @@ const clog = new Clog();
 export let roundLoop: NodeJS.Timeout;
 
 // Setup a single game
-const setupGame = async (restoreFromDB = false, restoredGame?: Game): Promise<void> => {
-  const nextGameTime = moment().tz('Europe/Amsterdam').add(CONFIG.GAME_INTERVAL, 'm').format();
-  await PersistentValueStore.setnextGameTime(nextGameTime);
-
+export const setupGame = async (restoreFromDB = false, restoredGame?: Game): Promise<void> => {
   if (restoreFromDB && restoredGame) {
     games.current = new Game(restoredGame.word.join(''), restoredGame?.difficulty, restoredGame);
-    clog.log(`Restoring game no. ${games.current.gameNumber} from DB - next one is scheduled to start at ${moment(nextGameTime).format('HH:mm')}`)
+    clog.log(`Restoring game no. ${games.current.gameNumber} from DB`)
 
     // Continue the game by issuing a game round
     gameRound();
   } else {
-    const lastDifficulty = await PersistentValueStore.getLastDifficulty();
-    const difficulty = lastDifficulty >= CONFIG.MIN_WORD_LENGTH ? lastDifficulty : CONFIG.MIN_WORD_LENGTH;
+    const lastGame = await getLastGame()
+    const nextDifficulty = lastGame ? lastGame.difficulty : 6;
+    const difficulty = nextDifficulty >= CONFIG.MIN_WORD_LENGTH ? nextDifficulty : CONFIG.MIN_WORD_LENGTH;
     const selectedWord = await getWord(difficulty);
     games.current = new Game(selectedWord, difficulty)
     games.current.phase = CONFIG.DEBUG ? PHASE.length - 2 : 0;
@@ -38,7 +35,7 @@ const setupGame = async (restoreFromDB = false, restoredGame?: Game): Promise<vo
     setTimeout(() => {
       // Send out the first tweet
       // This is inside a small timeout to ensure the gameNumber is retrieved properly
-      clog.log(`Set up new game with number ${(games.current as Game).gameNumber} - next one is scheduled to start at ${moment(nextGameTime).format('HH:mm')}`);
+      clog.log(`Set up new game with number ${(games.current as Game).gameNumber}`);
       sendCompiledTweet();
     }, 500)
   }
@@ -54,40 +51,29 @@ const setupGame = async (restoreFromDB = false, restoredGame?: Game): Promise<vo
 (async () => {
   await connect(CONFIG.MONGO_URL);
   await initTwitter();
-  const restoredGame = await restoreGame();
-  const nextGameTimeString = await PersistentValueStore.getnextGameTime();
-  if (restoredGame) {
-    setupGame(true, restoredGame);
-  } else if (nextGameTimeString) {
-    // Check if we should wait to start the new game
-    const nextGameTime = moment(nextGameTimeString);
-    const now = moment();
-    if (now.isBefore(nextGameTime, 'minutes')) {
-      // We haven't passed the nextGameTime so we need to wait before setting up a new game
-      const diff = Math.abs(now.diff(nextGameTime, 'milliseconds')) + 5000;
-      clog.log(`Waiting ${diff / 1000} seconds before starting a new game to comply with next game time`, LOGLEVEL.DEBUG);
-      setTimeout(() => {
-        setupGame();
-      }, diff)
+
+  const lastGame = await getLastGame();
+  if (lastGame) {
+    if (lastGame.inProgress) {
+      setupGame(true, lastGame);
     } else {
-      // We are past the nextGameTime so we are cleared to start a new one
-      clog.log('Ready to start new game, past next game time', LOGLEVEL.DEBUG);
-      setupGame();
+      // Check if we should wait to start the new game
+      const nextGameTime = moment(lastGame.end).add(CONFIG.GAME_INTERVAL, 'minutes');
+      const now = moment();
+      if (now.isBefore(nextGameTime, 'minutes') && lastGame.end) {
+        // We haven't passed the nextGameTime so we need to wait before setting up a new game
+        const diff = Math.abs(now.diff(nextGameTime, 'milliseconds')) + 5000;
+        clog.log(`Waiting ${diff / 1000} seconds before starting a new game to comply with next game time`, LOGLEVEL.INFO);
+        setTimeout(() => {
+          setupGame();
+        }, diff)
+      } else {
+        // We are past the nextGameTime so we are cleared to start a new one
+        clog.log('Ready to start new game, past next game time', LOGLEVEL.DEBUG);
+        setupGame();
+      }
     }
   } else {
-    clog.log('No next game time set, starting new game', LOGLEVEL.DEBUG);
     setupGame();
   }
-
-  // Main loop - start a game every X minutes
-  setInterval(async () => {
-    if (games?.current?.inProgress) {
-      const nextGameTime = moment().tz('Europe/Amsterdam').add(CONFIG.GAME_INTERVAL, 'm').format();
-      await PersistentValueStore.setnextGameTime(nextGameTime);
-      clog.log(`Game is already in progress, waiting one cycle to start a new one. Projected start date is ${moment(nextGameTime).format('HH:mm')}`)
-      return;
-    }
-
-    setupGame();
-  }, CONFIG.GAME_INTERVAL * 60 * 1000);
 })();
