@@ -44,7 +44,7 @@ export const gameRound = async (): Promise<void> => {
   // Guess only the most popular word
   if ((words as string[])[0] && (words as string[]).length > 0) {
     guessStatusWord = guessWord((words as string[])[0]);
-    clog.log(`Processing guess for word ${(words as string[])[0]} and got status ${Guess[guessStatusWord]}`)
+    clog.log(`Processing guess for word ${(words as string[])[0]} and got status ${Guess[guessStatusWord]}`, LOGLEVEL.DEBUG);
   }
 
   if (guessStatusWord === Guess.RIGHT) {
@@ -52,26 +52,29 @@ export const gameRound = async (): Promise<void> => {
     return;
   }
 
-  let guessStatusLetter = guessLetter((letters as string[])[letterIndex]);
-
-  // Loop through every letter until we get one that's not been guessed yet
-  while (guessStatusLetter === Guess.REPEAT) {
-    letterIndex++;
-
-    if (letterIndex >= (letters as string[]).length) {
-      clog.log('No unrepeated letter found.', LOGLEVEL.DEBUG);
-      return;
-    }
-
-    guessStatusLetter = guessLetter((letters as string[])[letterIndex]);
-  }
-
   // A word was guessed but it was wrong, so we increment the phase
   if (guessStatusWord === Guess.WRONG) {
     games.current.phase++;
-  } else if (guessStatusLetter === Guess.WRONG) {
-    // False letter was guessed
-    games.current.phase++;
+  } else {
+    // If no word was guessed we can process letters instead
+    let guessStatusLetter = guessLetter((letters as string[])[letterIndex]);
+
+    // Loop through every letter until we get one that's not been guessed yet
+    while (guessStatusLetter === Guess.REPEAT) {
+      letterIndex++;
+
+      if (letterIndex >= (letters as string[]).length) {
+        clog.log('No unrepeated letter found.', LOGLEVEL.DEBUG);
+        break;
+      }
+
+      guessStatusLetter = guessLetter((letters as string[])[letterIndex]);
+    }
+
+    if (guessStatusLetter === Guess.WRONG) {
+      // Wrong letter was guessed
+      games.current.phase++;
+    }
   }
 
   // Send the main tweet with the gallow, guessed words and all
