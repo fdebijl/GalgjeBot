@@ -75,6 +75,6 @@ describe('Game Registry', () => {
         .toEqual(expected)
 
       done();
-    }, 4000)
+    }, 5000)
   });
 });
