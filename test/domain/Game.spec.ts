@@ -5,6 +5,8 @@ import { db, connect } from '../../src/db/connect';
 import { getLastGame } from '../../src/db/getLastGame';
 import { CONFIG, isDev } from '../../src/config';
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+
 (async () => {
   // Wipe test DB before starting
   const mongoUrl = isDev ? CONFIG.MONGO_TEST_URL : CONFIG.MONGO_URL;
@@ -75,6 +77,6 @@ describe('Game Registry', () => {
         .toEqual(expected)
 
       done();
-    }, 5000)
+    }, 4000)
   });
 });
