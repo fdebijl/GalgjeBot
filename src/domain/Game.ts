@@ -1,6 +1,12 @@
+import moment from 'moment-timezone';
+import { Clog, LOGLEVEL } from '@fdebijl/clog';
+
 import { db } from '../db/connect';
 import { Result } from './Result';
-import moment from 'moment-timezone';
+import { Guess } from './Guess';
+import { getIndices } from '../logic/getIndices';
+
+const clog = new Clog();
 
 export class Game {
   /** The word that players have to guess this game. The letters in this word are split into an array for easy processing. */
@@ -91,12 +97,63 @@ export class Game {
     return;
   }
 
+  guessWord(word: string): Guess {
+    // Return repeated guess if the world has already been guessed in a previous tweet
+    if (this.guessed.words.indexOf(word) != -1) {
+      return Guess.REPEAT;
+    }
+
+    // If the length of the guessed word doesn't match the length of the game word we wont bother with counting it
+    if (this.word.join('').length != word.length) {
+      return Guess.INVALID;
+    }
+
+    // Push it to the guessed array as both options from this point onward constitute a valid guess
+    this.guessed.words.push(word);
+
+    // Otherwise check if the word matches
+    if (this.word.join('') == word) {
+      this.out = this.word;
+      return Guess.RIGHT;
+    }
+
+    return Guess.WRONG;
+  }
+
+  guessLetter(letter: string): Guess {
+    if (letter.length > 1) {
+      return Guess.INVALID;
+    }
+
+    if (this.guessed.letters.indexOf(letter) != -1) {
+      return Guess.REPEAT;
+    }
+
+    const indices = getIndices(this.word.join(''), letter);
+
+    clog.log(`The letter ${letter} got ${indices.length > 0 ? `indices ${indices}` : 'no indices'} on word ${this.word.join('')}`, LOGLEVEL.DEBUG);
+
+    // Push it to guessed letter array as either option (wrong or right) from this point onward constitutes a valid guess
+    this.guessed.letters.push(letter);
+
+    if (indices.length === 0) {
+      return Guess.WRONG;
+    } else {
+      indices.forEach(index => {
+        this.out[index] = this.word[index];
+      });
+    }
+
+    return Guess.RIGHT;
+  }
+
+
   static mock(): Game {
     return new Game('sjon', 6);
   }
 }
 
-// We use this object as a namespaces, since top-level exports cant be mutated - this way we can overwrite games.current
+// We use this object as a namespaces, since top-level exports can't be mutated - this way we can overwrite games.current
 export const games: {
   current: Game | undefined;
   previous: Game | undefined;

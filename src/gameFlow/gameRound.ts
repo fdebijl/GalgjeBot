@@ -4,9 +4,7 @@ import { Clog, LOGLEVEL } from '@fdebijl/clog';
 import { findTweets } from '../twitter/findTweets';
 import { runWinLossChecks } from './runWinLossCheck';
 import { Guess } from '../domain/Guess';
-import { guessWord } from '../logic/guessWord';
 import { doAfterVictory } from './doAfterVictory';
-import { guessLetter } from '../logic/guessLetter';
 import { sendCompiledTweet } from '../twitter/sendCompiledTweet';
 
 const clog = new Clog();
@@ -43,7 +41,7 @@ export const gameRound = async (): Promise<void> => {
   let guessStatusWord = Guess.INVALID;
   // Guess only the most popular word
   if ((words as string[])[0] && (words as string[]).length > 0) {
-    guessStatusWord = guessWord((words as string[])[0]);
+    guessStatusWord = games.current.guessWord((words as string[])[0]);
     clog.log(`Processing guess for word ${(words as string[])[0]} and got status ${Guess[guessStatusWord]}`, LOGLEVEL.DEBUG);
   }
 
@@ -57,7 +55,7 @@ export const gameRound = async (): Promise<void> => {
     games.current.phase++;
   } else {
     // If no word was guessed we can process letters instead
-    let guessStatusLetter = guessLetter((letters as string[])[letterIndex]);
+    let guessStatusLetter = games.current.guessLetter((letters as string[])[letterIndex]);
 
     // Loop through every letter until we get one that's not been guessed yet
     while (guessStatusLetter === Guess.REPEAT) {
@@ -68,7 +66,7 @@ export const gameRound = async (): Promise<void> => {
         break;
       }
 
-      guessStatusLetter = guessLetter((letters as string[])[letterIndex]);
+      guessStatusLetter = games.current.guessLetter((letters as string[])[letterIndex]);
     }
 
     if (guessStatusLetter === Guess.WRONG) {

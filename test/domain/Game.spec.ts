@@ -2,7 +2,6 @@
 
 import { Game } from '../../src/domain/Game';
 import { db, connect } from '../../src/db/connect';
-import { getLastGame } from '../../src/db/getLastGame';
 import { CONFIG, isDev } from '../../src/config';
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
@@ -62,21 +61,5 @@ describe('Game Registry', () => {
         }, 1000)
       }, 1000)
     }, 1000)
-  });
-
-  it('Restore game', (done) => {
-    setTimeout(async () => {
-      const lastGame = (await getLastGame()) as Game;
-      const restoredGame = new Game(lastGame.word.join(''), lastGame?.difficulty, lastGame)
-
-      const value = restoredGame.word;
-      const expected = lastGame.word;
-
-      expect(value)
-        .withContext(`Got '${value}', expected '${expected}'`)
-        .toEqual(expected)
-
-      done();
-    }, 4000)
   });
 });
