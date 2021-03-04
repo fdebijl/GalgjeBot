@@ -1,4 +1,5 @@
 import { Clog, LOGLEVEL } from '@fdebijl/clog';
+import { CONFIG } from '../config';
 import { cleanStatus } from '../util/cleanStatus';
 import { findMode } from '../util/findMode';
 import { isValidStatus } from '../util/isValidStatus';
@@ -19,7 +20,7 @@ export const getPopularSymbol = (statuses: ExtendedTweet[], limitToSingleLetter 
   // Case: we only have one status
   if (statuses.length === 1) {
     const single = cleanStatus(statuses[0].text as string);
-    if ((limitToSingleLetter && single.length === 1) || (!limitToSingleLetter && single.length > 3)) {
+    if ((limitToSingleLetter && single.length === 1) || (!limitToSingleLetter && single.length > CONFIG.MIN_WORD_LENGTH)) {
       clog.log(`Popular ${limitToSingleLetter ? 'letter' : 'word'} in replies was ${single}`, LOGLEVEL.DEBUG);
       // gameRound() expects an array from getPopularSymbol, even if we only have a single status.
       return [single];
@@ -32,7 +33,7 @@ export const getPopularSymbol = (statuses: ExtendedTweet[], limitToSingleLetter 
     const cleanedStatus = cleanStatus(status.text as string);
     // Either we're looking for a letter, in which case the only acceptable length is 1, orrrr
     // We're looking for a word, in which case it should be longer than three characters as per the game rules.
-    if ((limitToSingleLetter && cleanedStatus.length === 1) || (!limitToSingleLetter && cleanedStatus.length > 3)) {
+    if ((limitToSingleLetter && cleanedStatus.length === 1) || (!limitToSingleLetter && cleanedStatus.length > CONFIG.MIN_WORD_LENGTH)) {
       symbols.push(cleanedStatus);
     }
   })
