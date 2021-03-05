@@ -158,8 +158,6 @@ Aziatisch
 Azoren
 Azteek
 Azteken
-B
-B-52
 B-acteur
 B-film
 B-kant
@@ -168,9 +166,7 @@ BA
 BN'er
 BOB
 BOG
-BS
 BSE
-BV
 Babylonisch
 Bacchusfeest
 Bahama-eilanden
@@ -326,7 +322,6 @@ C-status
 C14-datering
 C14-methode
 CAT-scan
-CBB
 CBS-cijfer
 CBS-koersindex
 CDA'er
@@ -396,7 +391,6 @@ Cyprioot
 Cypriotisch
 Cyprus
 D-day
-DDT
 DNA
 DNA-keten
 DNA-molecule
@@ -520,10 +514,8 @@ Europoort
 Eurovisie
 Eurovisiesongfestival
 Exodus
-F-16
 F-16-gevechtsvliegtuig
 FAQ
-FM
 FM-band
 FM-frequentie
 FM-zender
@@ -571,7 +563,6 @@ Friesland
 Friestalig
 Friestalige
 Friezin
-GHz
 Gallisch
 Galliër
 Galliërs
@@ -627,8 +618,6 @@ Guyaan
 Guyaans
 Guyana
 Guyanees
-HTM
-HTML
 Haags
 Haarlem
 Haarlemmer
@@ -808,8 +797,6 @@ Jordanees
 Jordanië
 Jordaniër
 Junglecommando
-KB
-KZ
 Kaaps
 Kaapverdiaan
 Kaapverdisch
@@ -955,14 +942,12 @@ Luxemburg
 Luxemburger
 Luxemburgs
 Luxemburgse
-M
 MA
 ME
 ME'er
 ME-busje
 ME-patiënt
 ME-peloton
-MKZ
 MKZ-crisis
 MRI
 MRI-scan
@@ -1028,7 +1013,6 @@ Mexicaan
 Mexicaans
 Mexicaanse
 Mexico
-Mgr.
 Middelburg
 Middelburger
 Middelburgs
@@ -1076,13 +1060,9 @@ NAVO-hoofdkwartier
 NAVO-land
 NAVO-lidmaatschap
 NAVO-verdragsgebied
-NB
-NMBS
 NMBS-station
-NS
 NS-station
 NSB'er
-NT2
 NT2-onderwijs
 Naams
 Naamse
@@ -1236,8 +1216,6 @@ Overmaas
 P-trein
 PEN-club
 PET-scan
-PPS
-PS
 PSV'er
 Pakistaan
 Pakistaans
@@ -1384,7 +1362,6 @@ Russisch-orthodox
 Russische
 S-bocht
 SARS
-SGML
 SIS-kaart
 SOS
 SS'er
@@ -1553,7 +1530,6 @@ T-profiel
 T-shirt
 T-stuk
 T-vormig
-TGV
 Tachtiger
 Tachtigers
 Tafelberg
@@ -1622,17 +1598,14 @@ V-snaar
 V-teken
 V-vorm
 V-vormig
-VN
 VN-vredesmacht
 VN-waarnemer
-VSB
 VUT
 VUT-gerechtigd
 VUT-gerechtigde
 VUT-premie
 VUT-regeling
 VVD'er
-VVV
 VVV-kantoor
 Vaderdag
 Valentijnsdag
@@ -1679,7 +1652,6 @@ Vrijheidsbeeld
 Vuelta
 Vulgaat
 Vulgata
-W.
 WA
 WA-verzekering
 WAO'er
@@ -10639,7 +10611,6 @@ bazuinblazer
 bazuinen
 bazuingeschal
 baäl
-bbp
 bbp-groei
 beaarding
 beaat
@@ -15065,7 +15036,6 @@ beïnvloedingsmogelijkheid
 beïnvloedingswaan
 beïnvloedingswanen
 beïnvloedt
-bh
 bi
 biaisband
 biaislint
@@ -16986,11 +16956,8 @@ bluswerkzaamheden
 blut
 bluts
 blutsen
-blz.
 blèren
-blèt
 blèten
-bnp
 boa
 boa constrictor
 board
@@ -18807,7 +18774,6 @@ boycotten
 boysband
 boze
 bozig
-bpm
 braadboter
 braadharing
 braadjus
@@ -19808,7 +19774,6 @@ bruusk
 bruuskeren
 bruut
 bruutheid
-btw
 btw-constructie
 btw-heffing
 btw-inkomsten
@@ -20575,10 +20540,7 @@ buurvrouw
 buut
 buxus
 buy-out
-bv
-bv.
 bvba
-bw.
 bye
 bypass
 bypassoperatie
@@ -20594,7 +20556,6 @@ bètavak
 bètaversie
 bètawetenschap
 bühne
-c
 c-pion
 c-sleutel
 ca.
@@ -21231,7 +21192,6 @@ cavalerist
 cavalier
 cavia
 cayennepeper
-cd
 cd-boekje
 cd-bon
 cd-box
@@ -21444,7 +21404,6 @@ cessionaris
 cesuur
 cetaceeën
 ceteris paribus
-cfk
 chablis
 chachacha
 chaconne
@@ -24724,7 +24683,6 @@ custos
 cutter
 cutteren
 cutterzuiger
-cv
 cv-installatie
 cv-ketel
 cyaan
@@ -24773,7 +24731,6 @@ cytologisch
 cytoplasma
 cytosine
 cytostatica
-d
 d-pion
 daad
 daadkracht
@@ -25461,8 +25418,6 @@ davidster
 davit
 davylamp
 dazen
-dc
-dd.
 de
 de dato
 de facto
@@ -26736,7 +26691,6 @@ dezulke
 dezulken
 deïsme
 deïst
-dhr.
 dia
 dia-avond
 diabeet
@@ -27918,7 +27872,6 @@ diëtetiek
 diëtiek
 diëtist
 diëtiste
-dj
 dj-duo
 dj-sets
 djahé
@@ -29348,7 +29301,6 @@ dozeren
 dozijn
 doña
 dpi
-dr.
 dra
 dra.
 draad
@@ -30111,7 +30063,6 @@ drostambt
 droste-effect
 drostschap
 drozen
-drs.
 drug
 drugbaron
 drugbeleid
@@ -30372,8 +30323,6 @@ druus
 druïde
 druïdetempel
 dryade
-ds.
-dtp
 duaal
 dualis
 dualisering
@@ -30783,7 +30732,6 @@ duwstel
 duwvaart
 duwwerk
 duümviraat
-dvd
 dvd-recorder
 dvd-rom
 dvd-speler
@@ -30930,7 +30878,6 @@ dysplasie
 dystrofie
 débouché
 déchéance
-dégénéré
 déjà vu
 déjà-vugevoel
 délégué
@@ -34028,7 +33975,6 @@ ezelsvel
 ezelsveulen
 ezelswagen
 ezelwagen
-f
 f-sleutel
 fa
 fa.
@@ -36493,7 +36439,6 @@ fröbelonderwijs
 fröbelschool
 ftaalzuur
 ftisis
-ftp
 fuchsia
 fuga
 fugatisch
@@ -36703,9 +36648,7 @@ fytoplankton
 fytosanitair
 fytotherapie
 fêteren
-föhn
 föhnen
-g
 g-sleutel
 gaaf
 gaafheid
@@ -40675,7 +40618,6 @@ geïsoleerdheid
 geünieerd
 geüniformeerd
 geürbaniseerd
-gft
 gft-afval
 ghi
 ghostwriter
@@ -41891,7 +41833,6 @@ gouwenaar
 gouwgraaf
 gozer
 goëtie
-gps
 graad
 graadboog
 graadmeter
@@ -43180,7 +43121,6 @@ gruwzaamheid
 gruyère
 gruyèrekaas
 gruzelementen
-gsm
 gsm-bedrijf
 gsm-bedrijven
 gsm-gebruik
@@ -43328,7 +43268,6 @@ gyroscopisch
 gênant
 gêne
 götterdämmerung
-h
 h-pion
 ha
 haaf
@@ -44829,7 +44768,6 @@ hbo-student
 hbo-studie
 hbo-v
 hbo-verpleegkunde
-hbs
 he-man
 headbangen
 headhunten
@@ -47982,15 +47920,9 @@ hoving
 hozebek
 hozen
 hr-ketel
-hsl
 hsl-oost
 hso
-hst
-html
-hts
 hts'er
-http
-https
 hu
 hub
 hubertusbrood
@@ -48822,9 +48754,6 @@ hysterica
 hystericus
 hysterie
 hysterisch
-hè
-hèhè
-hé
 hôtelier
 hüttenkäse
 i
@@ -52083,7 +52012,6 @@ ivoorzwart
 ivoren
 izabel
 izabelkleurig
-j
 ja
 ja-stem
 ja-stemmer
@@ -52667,7 +52595,6 @@ jezuïetenschool
 jezuïetenstijl
 jezuïtisch
 jezuïtisme
-jhr.
 jicht
 jichtaanval
 jichtig
@@ -52689,8 +52616,6 @@ jip-en-janneketaal
 jippie
 jiujitsu
 jive
-jkvr.
-jl.
 job
 jobaanbieding
 jobaanbod
@@ -52953,7 +52878,6 @@ joyrider
 joyriding
 joystick
 jozef
-jr.
 ju
 jubee
 jubel
@@ -53161,9 +53085,6 @@ juwelierswinkel
 juwelierszaak
 juwelig
 juxtapositie
-k
-kW
-kWh
 ka
 kaag
 kaai
@@ -55763,7 +55684,6 @@ keycard
 keynesiaan
 keynesiaans
 kezen
-kg
 ki
 kibbelaar
 kibbelarij
@@ -57572,7 +57492,6 @@ kluut
 kluwen
 kluwenachtige
 klysma
-km
 kmo
 kmo'er
 kmo-markt
@@ -61400,8 +61319,6 @@ kwiteren
 kynologie
 kynologisch
 kynoloog
-kür
-l
 la
 laadbak
 laadboom
@@ -62584,7 +62501,6 @@ lazuursteen
 laïciseren
 laïcisme
 lbo
-lcd
 lcd-scherm
 leader
 leadgitarist
@@ -65608,12 +65524,8 @@ lozingspijp
 lozingspunt
 lozingsrecht
 lozingsvergunning
-lp
-lpg
-lsd
 lso
 lto
-lts
 lubben
 lubberen
 lubberiaans
@@ -66116,9 +66028,6 @@ lyrisch
 lyrisme
 lysine
 lysol
-löss
-m
-m/s
 ma
 maag
 maag-darmcatarre
@@ -70748,10 +70657,7 @@ mixes
 mixtum
 mixture
 mixtuur
-mkb
-mld.
 mlk-school
-mln.
 mnemotechniek
 mnemotechnisch
 mobbing
@@ -71901,10 +71807,7 @@ mozaïekvloer
 mozaïsch
 mozetta
 mozzarella
-mp
 mp3-formaat
-mr.
-mts
 mu
 mucoviscidose
 mud
@@ -72389,7 +72292,6 @@ muzikant
 muzikante
 muzikantesk
 muzisch
-mw.
 mycelium
 mycologie
 mycologisch
@@ -72424,7 +72326,6 @@ mytylschool
 myxomatose
 mêlee
 mêleren
-n
 na
 na-apen
 na-aper
@@ -74909,7 +74810,6 @@ novitiaat
 novitius
 novum
 nozem
-nr.
 nu
 nuance
 nuanceren
@@ -75007,7 +74907,6 @@ nuttigheid
 nuttigheidsdenken
 nuttigheidsoverweging
 nuttiging
-nv
 nylon
 nylonkous
 nylonweefsel
@@ -82827,9 +82726,6 @@ ozonlucht
 ozonsfeer
 ozonwater
 oöliet
-p
-p.
-pH
 pH-waarde
 pa
 paadje
@@ -84475,8 +84371,6 @@ pavlovreactie
 pavoiseren
 pay-per-view
 pay-tv
-pc
-pc's
 pc-afdeling
 pc-divisie
 pc-fabrikant
@@ -84489,7 +84383,6 @@ pc-privéproject
 pc-scherm
 pc-verkoop
 pc-verkoper
-pcb
 pdf-formaat
 peacekeeping
 peau de pêche
@@ -85489,7 +85382,6 @@ pezeweven
 pezewever
 pezig
 pfeiffer
-pg
 pi
 pianino
 pianissimo
@@ -86025,7 +85917,6 @@ piëtisme
 piëtist
 piëtistisch
 piëzometer
-pk
 plaag
 plaaggeest
 plaagstoot
@@ -86673,7 +86564,6 @@ plisseermachine
 plisseren
 plissé
 plistoceen
-plm.
 ploeg
 ploegarts
 ploegbaas
@@ -86872,7 +86762,6 @@ plutoniumbom
 plutoniumvoorraad
 pluvier
 pluviometer
-plv.
 pneumatiek
 pneumatisch
 pneumatologie
@@ -88100,7 +87989,6 @@ poëzieprijs
 poëzietijdschrift
 poëziewedstrijd
 poëziezomer
-pr
 pr-adviseur
 pr-bedrijf
 pr-beleid
@@ -90107,7 +89995,6 @@ pseudowetenschappelijk
 psilocine
 psittacosis
 psoriasis
-pst
 psyche
 psychedelica
 psychedelicum
@@ -90535,7 +90422,6 @@ puzzelstukje
 puzzeltocht
 puzzelvraag
 puzzelwerk
-pvc
 pvc-buis
 pygmee
 pygmeeënvolk
@@ -90562,7 +90448,6 @@ pyrronisme
 pyrrusoverwinning
 pythisch
 python
-q
 qat
 qua
 quad
@@ -90662,7 +90547,6 @@ quotiënt
 quotum
 quotumregeling
 quotums
-r
 ra
 raad
 raadadviseur
@@ -96084,7 +95968,6 @@ ruïne
 ruïneren
 ruïnestad
 ruïneus
-rvs
 régence
 réussite
 rêverie
@@ -96112,7 +95995,6 @@ röntgenstraling
 röntgentherapie
 rösti
 rücksichtslos
-s
 sa
 saai
 saaien
@@ -101167,8 +101049,6 @@ slurpen
 sluw
 sluwe
 sluwheid
-slöjd
-sm
 smaad
 smaadproces
 smaadrede
@@ -101415,7 +101295,6 @@ smoutig
 smoutwerk
 smoutzetter
 smouzen
-sms
 sms'en
 sms'je
 sms'jes
@@ -108634,7 +108513,6 @@ systematisch
 systematiseren
 systematisering
 sèvres
-t
 t-groep
 taai
 taaie
@@ -109540,12 +109418,9 @@ taxushaag
 taxustwijgen
 taylorstelsel
 taël
-tb
-tbc
 tbc-bestrijding
 tbc-onderzoek
 tbc-test
-tbs
 tbs'er
 tbs'ers
 tbs-behandeling
@@ -111240,7 +111115,6 @@ textuur
 tezamen
 tezelfdertijd
 tezen
-tgv
 thaiboksen
 thalassotherapie
 thalidomide
@@ -114960,7 +114834,6 @@ tuttig
 tuttigheid
 tutu
 tuut
-tv
 tv'loos
 tv-aanbod
 tv-acteur
@@ -116944,8 +116817,6 @@ uwer
 uwerzijds
 uzelf
 uzi
-v
-v.
 va
 va-banque
 va-et-vient
@@ -122375,7 +122246,6 @@ vezelstof
 vezeltje
 vezelvlies
 vezen
-vgl.
 via
 via via
 viaduct
@@ -123148,7 +123018,6 @@ vizierkijker
 vizierklep
 vizierkorrel
 vizierlijn
-vj
 vla
 vlaag
 vlaai
@@ -123801,7 +123670,6 @@ vmbo'ers
 vmbo-leerling
 vmbo-scholen
 vmbo-school
-vnl.
 vocaal
 vocabulaire
 vocabularium
@@ -125836,7 +125704,6 @@ voyeur
 voyeurisme
 voyeuristisch
 vozen
-vp
 vraag
 vraag-en-antwoordspel
 vraagachtig
@@ -126576,7 +126443,6 @@ vruchtwateronderzoek
 vruchtwaterpunctie
 vruchtwisseling
 vruchtzetting
-vs.
 vuig
 vuil
 vuilaard
@@ -126812,8 +126678,6 @@ vwo-niveau
 vwo-opleiding
 vwo-scholiere
 vwo-school
-vzw
-w
 waadbaar
 waadpoot
 waadvogel
@@ -128098,7 +127962,6 @@ waxcoat
 waxinelichtje
 wazig
 wazigheid
-wc
 wc-borstel
 wc-bril
 wc-papier
@@ -131699,7 +131562,6 @@ wurm
 wurmen
 wyandotte
 wybertje
-x
 x-aantal
 x-as
 x-stralen
@@ -131722,7 +131584,6 @@ xeres
 xereswijn
 xeroderma
 xerografie
-xtc
 xtc-bende
 xtc-gebruik
 xtc-handel
@@ -131773,8 +131634,6 @@ yuppenstel
 yuppie
 yuppieachtig
 yuppies
-z
-z'n
 zaad
 zaadbakje
 zaadbal
@@ -133236,7 +133095,6 @@ zeveraar
 zeveraarster
 zeveren
 zeverlap
-zgn.
 zich
 zicht
 zichtas
@@ -133825,7 +133683,6 @@ zitvlak
 zitvlees
 zitzak
 zloty
-zmlk
 zmlk-school
 zo
 zo langzamerhand
@@ -135240,7 +135097,6 @@ zwoor
 zwoord
 zymose
 zèta
-à
 à charge
 à contrecoeur
 à la carte
@@ -135249,7 +135105,6 @@ zèta
 échéance
 élégance
 éminence grise
-één
 öre
 überhaupt
 übermensch
@@ -135330,9 +135185,6 @@ cyclocrossen
 lazerstralen
 mishoord
 ontvloeid
-vnw.
-ww.
-'t
 aprilgrap
 Brugman
 bups
@@ -135364,7 +135216,6 @@ Duitssprekend
 Opperlands
 pro-Iraaks
 Oud-Romeins
-Bq
 Vlaamstalig
 Ruslandkunde
 Oranjeteam
@@ -135451,7 +135302,6 @@ montage-instructie
 steakhouse
 Sovjet-socialisme
 Sranantongo
-SRD
 Schengenakkoord
 shutter
 Slotfeest
@@ -136600,7 +136450,6 @@ eenheidsbeweging
 ontspanningsliteratuur
 ontronding
 erbovenuit
-référé
 reaffecteren
 bewustzijnsinhoud
 kenobject
@@ -137460,7 +137309,6 @@ ertsoverslagbedrijf
 Mokumer
 monopoliebedrijf
 sneeuwgors
-WvS
 bruinkoolindustrie
 luchtwortelboom
 Koerdenvraagstuk
@@ -137900,7 +137748,6 @@ bauxietmarkt
 bauxietstad
 bazigheid
 bazuinkoor
-bc.
 beatlehaar
 bebophaar
 bedampen
@@ -138019,7 +137866,6 @@ botsingsenergie
 bowl-out
 boycotbeleid
 boycotwet
-bps
 brandweerrood
 brandzwam
 brasa
@@ -138611,7 +138457,6 @@ houtmaat
 houtmeel
 houtveredeling
 houtweefsel
-htm
 hubbleconstante
 hudo
 huilkramp
@@ -138768,7 +138613,6 @@ kernhem
 kernwetenschap
 kervelblad
 keukenmeisje
-kgm
 khimar
 kick-and-rush
 kick-and-rushvoetbal
@@ -138879,7 +138723,6 @@ kruimelvlaai
 kruisingsproef
 kruisschroevendraaier
 kruisstelling
-ktv
 kuiptent
 kuitbeenspier
 kunstenaarscafé
@@ -140103,7 +139946,6 @@ twatwa
 tweedegeneratieallochtoon
 tweekamerparlement
 tweepoot
-twk
 type-eenonderwijs
 typetweeonderwijs
 uienmengsel
@@ -140900,22 +140742,15 @@ bruin-zwart
 allerleukst
 adv
 naw
-pdf
-sf
-tl
 dierenactivist
 weesgegroetje
 Malediven
-WK
 EK
 teststof
 vanop
 review
 kredietcrisis
-mg
 hare
-3D
-NK
 screening
 PvdA-fractie
 filmkeuze
@@ -140923,16 +140758,13 @@ blogger
 RNA
 ABS
 infrastructuurbeheerder
-RSS
 A3
 contactgegevens
 basisverordening
-HRM
 VVD-fractie
 fysio
 voorzieningenrechter
 CDA-fractie
-H5N1
 douanevervoer
 afb.
 kookvocht
@@ -140944,7 +140776,6 @@ capaciteitsopbouw
 25-jarig
 VN-Veiligheidsraad
 Waterschapswet
-GBP
 prevalentie
 belastingcenten
 geo-informatie
@@ -140986,7 +140817,6 @@ heraangelegd
 groepsvrijstelling
 spammen
 CAD
-ms
 Bosnië-Herzegovina
 EU-wetgeving
 drugshol
@@ -141014,7 +140844,6 @@ schoolomgeving
 hoofdpagina
 laseren
 bewaarplicht
-MDF
 T-splitsing
 massastaking
 arbeidersstrijd
@@ -141041,7 +140870,6 @@ ringenstelsel
 aanschaffingswaarde
 spiegelreflex
 hielbeen
-GMT
 camperplaats
 testproces
 doormailen
@@ -141052,7 +140880,6 @@ Zuiderzeelijn
 regeldruk
 VVE
 OCMW-voorzitter
-PLC
 entmateriaal
 hoofdveld
 Amazonewoud
@@ -141112,7 +140939,6 @@ hoofdgeding
 onverdoofd
 getuigenbescherming
 verdunningswater
-3M
 glucosamine
 20-jarig
 homobeweging
@@ -141134,7 +140960,6 @@ dosisniveau
 toegangspunt
 beperkingsgebied
 inlogcode
-VPN
 suikersector
 winstvoet
 EG-recht
@@ -141157,18 +140982,15 @@ chiropractor
 spaghettisaus
 stikstofmonoxide
 vrijstellingsprocedure
-CJP
 PvdA-fractievoorzitter
 C-klasse
 EG-bijdrage
-VHF
 bijboot
 vrijgezellenfeest
 bodemkaart
 testomgeving
 vliegtaks
 schoolboerderij
-nrs.
 typegoedkeuringsinstantie
 ophokplicht
 vismaat
@@ -161985,11 +161807,8 @@ poppenkasterij
 privégedrag
 pottenbakkersdraaischijf
 potroos
-'s
-06
 1e
 2e
-4wd
 AAW
 ABU
 AM
@@ -162017,7 +161836,6 @@ CHE
 CO-emissie
 Centrumdemocraten
 Christus-Koning
-DNS
 Generaliteitslanden
 Gezinsraad
 Grabbelpas
@@ -162258,7 +162076,6 @@ gezinsarbeid
 gezinscoach
 gezinsmigratie
 gezondheidswetenschappelijk
-ggz
 godsnaam
 gogo
 grieppandemie
@@ -162402,7 +162219,6 @@ plattelandsjongen
 plichtig
 polstas
 postinitieel
-ppm
 prestatiebekostiging
 prijsbijstellingstranche
 product-marktcombinatie
@@ -163799,7 +163615,6 @@ behandelingsstap
 alkalinebatterij
 goededoelenloterij
 mijngalerij
-XLX
 ventilatiemogelijkheid
 alleenstaandenpensioen
 onthardingsinstallatie
