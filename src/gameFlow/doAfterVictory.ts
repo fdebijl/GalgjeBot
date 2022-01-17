@@ -1,16 +1,10 @@
-import { Clog, LOGLEVEL } from '@fdebijl/clog';
 import moment from 'moment-timezone';
 
-import { games } from '../domain/Game';
-import { Result } from '../domain/Result';
+import { games, Result } from '../domain';
 import { stopGame } from './stopGame';
-import { findTweets } from '../twitter/findTweets';
-import { cleanStatus } from '../util/cleanStatus';
-import { removeDuplicatesFrom } from '../util/removeDuplicatesFrom';
-import { sendUncompiledTweet } from '../twitter/sendUncompiledTweet';
+import { findTweets, sendUncompiledTweet } from '../twitter';
+import { cleanStatus, removeDuplicatesFrom, clog, LOGLEVEL } from '../util';
 import { CONFIG } from '../config';
-
-const clog = new Clog();
 
 export const doAfterVictory = async (): Promise<void> => {
   if (!games.current) {

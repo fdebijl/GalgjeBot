@@ -1,11 +1,19 @@
 /// <reference types="../" />
 
+import { SpecReporter, StacktraceOption } from 'jasmine-spec-reporter'
+
 import { games, Game } from '../src/domain/Game';
-import { connect } from '../src/db/connect';
-import { CONFIG, isDev } from '../src/config';
+
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30 * 1000;
+jasmine.getEnv().clearReporters()
+jasmine.getEnv().addReporter(
+  new SpecReporter({
+    spec: {
+      displayStacktrace: StacktraceOption.PRETTY
+    }
+  })
+);
 
 (async () => {
-  const mongoUrl = isDev ? CONFIG.MONGO_TEST_URL : CONFIG.MONGO_URL;
-  await connect(mongoUrl);
   games.current = Game.mock();
 })();

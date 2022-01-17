@@ -1,17 +1,14 @@
 /// <reference types="../../" />
 
 import { Game } from '../../src/domain/Game';
-import { db, connect } from '../../src/db/connect';
+import { mog } from '../../src/db';
 import { CONFIG, isDev } from '../../src/config';
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
 (async () => {
-  // Wipe test DB before starting
-  const mongoUrl = isDev ? CONFIG.MONGO_TEST_URL : CONFIG.MONGO_URL;
-  await connect(mongoUrl);
-  if (db.databaseName === 'galgjebottest') {
-    await db.collection('games').deleteMany({});
+  if (mog.db.databaseName === 'galgjebottest') {
+    await mog.delete({}, { collection: 'games' });
   }
 })();
 

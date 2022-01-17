@@ -8,22 +8,25 @@ on:
 jobs:
   test:
     name: Test
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '12'
+          node-version: 14
       - name: Install dependencies
         run: npm ci
       - name: Start MongoDB
-        uses: supercharge/mongodb-github-action@1.1.0
+        uses: supercharge/mongodb-github-action@1.7.0
         with:
-          mongodb-version: 4.2
+          mongodb-version: 4.4
       - name: Run tests
         run: npm test
         env:
           CI: true
+          NODE_ENV: ci
+          MONGO_URL: mongodb://localhost:27017/
+          MONGO_DB: galgjebottest
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

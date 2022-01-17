@@ -1,13 +1,9 @@
-import { getPopularSymbol } from '../logic/getPopularSymbol';
-import { games } from '../domain/Game';
-import { Clog, LOGLEVEL } from '@fdebijl/clog';
-import { findTweets } from '../twitter/findTweets';
+import { clog, LOGLEVEL } from '../util';
+import { getPopularSymbol } from '../logic';
+import { games, Guess } from '../domain';
+import { findTweets, sendCompiledTweet } from '../twitter';
 import { runWinLossChecks } from './runWinLossCheck';
-import { Guess } from '../domain/Guess';
 import { doAfterVictory } from './doAfterVictory';
-import { sendCompiledTweet } from '../twitter/sendCompiledTweet';
-
-const clog = new Clog();
 
 export const gameRound = async (): Promise<void> => {
   if (!games.current) {

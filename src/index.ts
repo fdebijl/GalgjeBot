@@ -2,15 +2,11 @@ import moment from 'moment-timezone';
 import { Clog, LOGLEVEL } from '@fdebijl/clog';
 
 import { CONFIG, isDev } from './config';
-import { initTwitter } from './twitter/initTwitter';
-import { games, Game } from './domain/Game';
-import { getWord } from './logic/getWord';
-import { PHASE } from './domain/Phase';
-import { connect } from './db/connect';
-import { sendCompiledTweet } from './twitter/sendCompiledTweet';
-import { gameRound } from './gameFlow/gameRound';
-import { getLastGame } from './db/getLastGame';
-import { Result } from './domain/Result';
+import { initTwitter, sendCompiledTweet } from './twitter';
+import { games, Game, PHASE, Result } from './domain';
+import { getWord } from './logic';
+import { gameRound } from './gameFlow';
+import { getLastGame } from './db';
 
 const clog = new Clog();
 
@@ -51,8 +47,6 @@ export const setupGame = async (restoreFromDB = false, restoredGame?: Game): Pro
 
 // Start a game on first boot
 (async () => {
-  const mongoUrl = isDev ? CONFIG.MONGO_TEST_URL : CONFIG.MONGO_URL;
-  await connect(mongoUrl);
   await initTwitter();
 
   const lastGame = await getLastGame();

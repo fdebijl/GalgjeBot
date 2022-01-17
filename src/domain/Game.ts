@@ -1,12 +1,10 @@
 import moment from 'moment-timezone';
-import { Clog, LOGLEVEL } from '@fdebijl/clog';
 
-import { db } from '../db/connect';
+import { clog, LOGLEVEL } from '../util';
+import { getLastGame, mog } from '../db';
 import { Result } from './Result';
 import { Guess } from './Guess';
-import { getIndices } from '../logic/getIndices';
-
-const clog = new Clog();
+import { getIndices } from '../logic';
 
 export class Game {
   /** The word that players have to guess this game. The letters in this word are split into an array for easy processing. */
@@ -68,9 +66,9 @@ export class Game {
 
       // Fallback game number
       this.gameNumber = 1;
-      db.collection('games').find({}).sort({'gameNumber': -1}).toArray().then(games => {
-        if (games && games.length > 0) {
-          this.gameNumber = (games[0] as Game).gameNumber + 1;
+      getLastGame().then(game => {
+        if (game) {
+          this.gameNumber = game.gameNumber + 1;
         }
       });
     }
@@ -78,7 +76,7 @@ export class Game {
 
   async persist(): Promise<void> {
     const query = { gameNumber: this.gameNumber };
-    const update = { $set: {
+    const update = {
       word: this.word,
       phase: this.phase,
       guessed: this.guessed,
@@ -90,10 +88,10 @@ export class Game {
       start: this.start,
       end: this.end,
       result: this.result
-    }};
-    const options = { upsert: true };
+    };
+    const options = { collection: 'games', upsert: true };
 
-    await db.collection('games').updateOne(query, update, options);
+    await mog.update(query, update, options);
     return;
   }
 
