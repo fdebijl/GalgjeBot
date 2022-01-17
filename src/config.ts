@@ -13,7 +13,7 @@ export const CONFIG = {
   /** Game interval in minutes - defaults to 120 */
   GAME_INTERVAL: Number.parseInt((process.env.GAME_INTERVAL as string) ?? '120'),
   /** Time between rounds (i.e. tweets) - defaults to 6 */
-  ROUND_INTERVAL: process.env.DEBUG ? 0.5 : Number.parseInt((process.env.ROUND_INTERVAL as string) ?? '6'),
+  ROUND_INTERVAL: process.env.DEBUG === 'true' ? 0.5 : Number.parseInt((process.env.ROUND_INTERVAL as string) ?? '6'),
   TWIT_CONFIG: {
     consumer_key: process.env.CONSUMER_KEY as string,
     consumer_secret: process.env.CONSUMER_SECRET as string,
