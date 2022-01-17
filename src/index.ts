@@ -1,7 +1,7 @@
 import moment from 'moment-timezone';
 import { Clog, LOGLEVEL } from '@fdebijl/clog';
 
-import { CONFIG, isDev } from './config';
+import { CONFIG } from './config';
 import { initTwitter, sendCompiledTweet } from './twitter';
 import { games, Game, PHASE, Result } from './domain';
 import { getWord } from './logic';
