@@ -1,9 +1,8 @@
-import { games, Game } from '../domain/Game';
-import { T } from './initTwitter';
 import { Twitter } from 'twit';
-import { Clog, LOGLEVEL } from '@fdebijl/clog';
 
-const clog = new Clog();
+import { clog, LOGLEVEL } from '../util';
+import { games, Game } from '../domain';
+import { T } from './initTwitter';
 
 export const findTweets = async (inReplyTo?: string): Promise<ExtendedTweet[] | false> => {
   return new Promise(async (resolve) => {

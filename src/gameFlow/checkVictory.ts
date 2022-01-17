@@ -1,7 +1,5 @@
-import { games } from '../domain/Game';
-import { Clog, LOGLEVEL } from '@fdebijl/clog';
-
-const clog = new Clog();
+import { games } from '../domain';
+import { clog, LOGLEVEL } from '../util';
 
 export const checkVictory = (): boolean => {
   if (!games.current) {

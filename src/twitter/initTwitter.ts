@@ -1,5 +1,6 @@
-import { CONFIG } from '../config';
 import Twit from 'twit';
+
+import { CONFIG } from '../config';
 
 export let T: Twit;
 

@@ -1,9 +1,5 @@
-import { Clog, LOGLEVEL } from '@fdebijl/clog';
+import { clog, LOGLEVEL, cleanStatus, isValidStatus, findMode } from '../util';
 import { CONFIG } from '../config';
-import { cleanStatus } from '../util/cleanStatus';
-import { findMode } from '../util/findMode';
-import { isValidStatus } from '../util/isValidStatus';
-const clog = new Clog();
 
 // Filter input tweets so only actual guesses are counted
 export const getPopularSymbol = (statuses: ExtendedTweet[], limitToSingleLetter = false): boolean | string[] => {

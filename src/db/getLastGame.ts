@@ -1,14 +1,15 @@
 import { Game } from '../domain/Game';
-import { db } from './connect';
+import { mog } from './mog';
 
-export const getLastGame = (): Promise<Game | void> => {
-  return new Promise((resolve) => {
-    db.collection('games').find({}).sort({'gameNumber': -1}).toArray().then(games => {
-      if (games && games.length > 0) {
-        resolve(games[0]);
-      }
-
-      resolve();
-    });
+export const getLastGame = async (): Promise<Game | void> => {
+  const games = await mog.list<Game>({}, {
+    collection: 'games',
+    sort: [['gameNumber', -1]]
   });
+
+  if (games && games.length > 0) {
+    return games[0];
+  }
+
+  return;
 }

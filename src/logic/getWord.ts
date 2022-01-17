@@ -1,8 +1,7 @@
-import { Clog, LOGLEVEL } from '@fdebijl/clog';
 import fs from 'fs';
+
+import { clog, LOGLEVEL, isValidWord } from '../util';
 import { CONFIG } from '../config';
-import { isValidWord } from '../util/isValidWord';
-const clog = new Clog();
 
 export const getWord = async (difficulty: number): Promise<string> => {
   return new Promise((resolve) => {

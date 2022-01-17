@@ -1,10 +1,8 @@
 import { Params } from 'twit';
-import { Clog, LOGLEVEL } from '@fdebijl/clog';
 
+import { clog, LOGLEVEL } from '../util';
 import { T } from './initTwitter';
-import { games } from '../domain/Game';
-
-const clog = new Clog();
+import { games } from '../domain';
 
 export const sendUncompiledTweet = (text: string, replyToID: string): void => {
   const params: Params = {

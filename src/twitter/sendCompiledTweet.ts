@@ -1,12 +1,9 @@
-import { Clog, LOGLEVEL } from '@fdebijl/clog';
 import { Params } from 'twit';
 
+import { clog, LOGLEVEL } from '../util';
 import { CONFIG } from '../config';
-import { games } from '../domain/Game';
-import { PHASE } from '../domain/Phase';
+import { games, PHASE } from '../domain';
 import { T } from './initTwitter';
-
-const clog = new Clog();
 
 export const sendCompiledTweet = async (replyToID?: string): Promise<void> => {
   if (!games.current) {

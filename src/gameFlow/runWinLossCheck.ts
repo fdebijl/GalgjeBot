@@ -1,11 +1,8 @@
-import { games } from '../domain/Game';
-import { Clog, LOGLEVEL } from '@fdebijl/clog';
+import { games, PHASE } from '../domain';
+import { clog, LOGLEVEL } from '../util';
 import { doAfterVictory } from './doAfterVictory';
-import { PHASE } from '../domain/Phase';
 import { checkVictory } from './checkVictory';
 import { doAfterLoss } from './doAfterLoss';
-
-const clog = new Clog();
 
 export const runWinLossChecks = (): void => {
   if (!games.current) {

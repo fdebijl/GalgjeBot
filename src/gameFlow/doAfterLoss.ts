@@ -1,13 +1,11 @@
-import { games } from '../domain/Game';
-import { Result } from '../domain/Result';
-import { Clog, LOGLEVEL } from '@fdebijl/clog';
-import { stopGame } from './stopGame';
-import { sendUncompiledTweet } from '../twitter/sendUncompiledTweet';
-
 import moment from 'moment-timezone';
+
+import { clog, LOGLEVEL } from '../util';
+import { games, Result } from '../domain';
+import { stopGame } from './stopGame';
+import { sendUncompiledTweet } from '../twitter';
 import { CONFIG } from '../config';
 
-const clog = new Clog();
 
 export const doAfterLoss = async (): Promise<void> => {
   if (!games.current) {

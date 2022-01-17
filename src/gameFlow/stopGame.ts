@@ -1,11 +1,9 @@
-import { Clog, LOGLEVEL } from '@fdebijl/clog';
 import moment from 'moment-timezone';
 
+import { clog, LOGLEVEL } from '../util';
 import { roundLoop, setupGame } from '../index';
-import { games } from '../domain/Game';
+import { games } from '../domain';
 import { CONFIG } from '../config';
-
-const clog = new Clog();
 
 export const stopGame = async (): Promise<void> => {
   if (!games.current) {
