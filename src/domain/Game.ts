@@ -76,7 +76,7 @@ export class Game {
 
   async persist(): Promise<void> {
     const query = { gameNumber: this.gameNumber };
-    const update = { $set: {
+    const update = {
       word: this.word,
       phase: this.phase,
       guessed: this.guessed,
@@ -88,8 +88,8 @@ export class Game {
       start: this.start,
       end: this.end,
       result: this.result
-    }};
-    const options = { upsert: true };
+    };
+    const options = { collection: 'games', upsert: true };
 
     await mog.update(query, update, options);
     return;
