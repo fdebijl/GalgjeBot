@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@fdebijl/clog": "1.105.0",
-    "@fdebijl/mog": "1.3.1",
+    "@fdebijl/mog": "1.4.0",
     "dotenv": "14.2.0",
     "moment-timezone": "0.5.34",
     "mongodb": "4.3.1",
