@@ -9,7 +9,7 @@
     "test": "nyc -e .ts -x \"*.spec.ts\" -x \"dist/**\" -x \"test/**\" --reporter=json jasmine-ts --config=jasmine.config.json --random=false && mv coverage/coverage-final.json coverage/coverage.json && codecov"
   },
   "dependencies": {
-    "@fdebijl/clog": "1.131.0",
+    "@fdebijl/clog": "1.132.0",
     "@fdebijl/mog": "1.7.0",
     "dotenv": "16.0.1",
     "moment-timezone": "0.5.34",
